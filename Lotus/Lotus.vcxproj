@@ -148,6 +148,8 @@
     <ClInclude Include="src\Lotus\Core.h" />
     <ClInclude Include="src\Lotus\EntryPoint.h" />
     <ClInclude Include="src\Lotus\Log.h" />
+    <ClInclude Include="src\Renderer\VulkanDevice.h" />
+    <ClInclude Include="src\Renderer\VulkanSwapChain.h" />
     <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="src\lotuspch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -564,16 +566,16 @@
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
-    <ClInclude Include="src\Renderer\VulkanDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp" />
     <ClCompile Include="src\Lotus\Log.cpp" />
+    <ClCompile Include="src\Renderer\VulkanDevice.cpp" />
+    <ClCompile Include="src\Renderer\VulkanSwapChain.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\lotuspch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Renderer\VulkanDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

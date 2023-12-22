@@ -51,6 +51,12 @@
     <ClInclude Include="src\Lotus\Log.h">
       <Filter>src\Lotus</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\VulkanDevice.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\VulkanSwapChain.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
@@ -1299,7 +1305,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\VulkanDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp">
@@ -1308,12 +1313,17 @@
     <ClCompile Include="src\Lotus\Log.cpp">
       <Filter>src\Lotus</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\VulkanDevice.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\VulkanSwapChain.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Window\Window.cpp">
       <Filter>src\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\VulkanDevice.cpp" />
   </ItemGroup>
 </Project>
