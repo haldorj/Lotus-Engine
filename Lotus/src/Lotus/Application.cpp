@@ -11,14 +11,13 @@ namespace Lotus {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 	Application* Application::s_Instance = nullptr;
-	GLFWwindow* m_Window;
 
 	Application::Application()
-		: m_Running{true}, m_Window{"Lotus Engine", 1280, 720}
+		: m_Window{ "Lotus Engine", 1280, 720 }
 	{
 		LOTUS_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
-
+		m_Device;
 	}
 
 
@@ -29,7 +28,7 @@ namespace Lotus {
 
 	void Application::Run()
 	{
-		while (m_Running)
+		while (!m_Window.Closed())
 		{
 			m_Window.Update();
 		}

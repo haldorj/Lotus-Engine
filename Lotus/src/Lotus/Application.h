@@ -4,6 +4,7 @@
 #include "Window/Window.h"
 
 #include "glm/glm.hpp"
+#include <Renderer/VulkanDevice.h>
 
 namespace Lotus {
 
@@ -16,8 +17,10 @@ namespace Lotus {
 		void Run();
 
 	private:
-		bool m_Running;
 		Window m_Window;
+
+		VulkanDevice m_Device;
+
 	private:
 		static Application* s_Instance;
 	};
