@@ -59,6 +59,7 @@ namespace Lotus {
 
 	VulkanDevice::~VulkanDevice()
 	{
+		vkDestroyDevice(m_Device, nullptr);
 
 		if (enableValidationLayers)
 		{
@@ -166,6 +167,50 @@ namespace Lotus {
 		LOTUS_CORE_INFO("Physical device: {0}", properties.deviceName);
 	}
 
+	void VulkanDevice::CreateLogicalDevice()
+	{
+		QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
+
+		// Describes the number of queues we want for a single queue family
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+		queueCreateInfo.queueCount = 1;
+
+		// Specify priority for queue requests (0.0f - 1.0f)
+		float queuePriority = 1.0f;
+		queueCreateInfo.pQueuePriorities = &queuePriority;
+
+		VkPhysicalDeviceFeatures deviceFeatures{};
+
+		VkDeviceCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		createInfo.pQueueCreateInfos = &queueCreateInfo;
+		createInfo.queueCreateInfoCount = 1;
+
+		createInfo.pEnabledFeatures = &deviceFeatures;
+
+		createInfo.enabledExtensionCount = 0;
+
+		// Validation layers
+		if (enableValidationLayers) 
+		{
+			createInfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
+			createInfo.ppEnabledLayerNames = m_ValidationLayers.data();
+		}
+		else 
+		{
+			createInfo.enabledLayerCount = 0;
+		}
+		// Create logical device
+		if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device) != VK_SUCCESS) 
+		{
+			LOTUS_CORE_ERROR("Failed to create logical device!");
+		}
+
+		vkGetDeviceQueue(m_Device, indices.graphicsFamily.value(), 0, &m_GraphicsQueue);
+	}
+
 	bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
 	{
 		QueueFamilyIndices indices = FindQueueFamilies(device);
@@ -226,8 +271,6 @@ namespace Lotus {
 
 	std::vector<const char*> VulkanDevice::GetRequiredExtensions()
 	{
-		// Return the required list of extensions based on whether validation layers are enabled or not:
-
 		// Get the required extensions from GLFW
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
@@ -236,7 +279,9 @@ namespace Lotus {
 
 		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		if (enableValidationLayers) {
+		// Return the required list of extensions based on whether validation layers are enabled or not:
+		if (enableValidationLayers) 
+		{
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		}
 

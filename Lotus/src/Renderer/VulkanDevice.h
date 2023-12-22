@@ -30,6 +30,7 @@ namespace Lotus {
 		void CreateInstance();
 		void SetupDebugMessenger();
 		void PickPhysicalDevice();
+		void CreateLogicalDevice();
 
 		// Helper functions
 		bool CheckValidationLayerSupport();
@@ -44,6 +45,8 @@ namespace Lotus {
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
+		VkDevice m_Device; // Logical device
+		VkQueue m_GraphicsQueue;
 		
 		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 
