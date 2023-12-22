@@ -134,6 +134,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\SandboxApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Lotus\Lotus.vcxproj">
       <Project>{7C219D0D-E835-C5BE-B1B7-681E1D8BC1EF}</Project>
     </ProjectReference>
