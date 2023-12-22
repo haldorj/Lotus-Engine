@@ -145,8 +145,11 @@
   <ItemGroup>
     <ClInclude Include="src\Lotus.h" />
     <ClInclude Include="src\Lotus\Application.h" />
+    <ClInclude Include="src\Lotus\Core.h" />
     <ClInclude Include="src\Lotus\EntryPoint.h" />
     <ClInclude Include="src\Lotus\Log.h" />
+    <ClInclude Include="src\Renderer\Device.h" />
+    <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="src\lotuspch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -566,6 +569,8 @@
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp" />
     <ClCompile Include="src\Lotus\Log.cpp" />
+    <ClCompile Include="src\Renderer\Device.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\lotuspch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

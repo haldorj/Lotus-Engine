@@ -112,6 +112,8 @@ project "Sandbox"
         "Lotus/src",
         "Lotus/vendor",
         "%{IncludeDir.glm}",
+        "%{IncludeDir.Vulkan}",
+        "%{IncludeDir.GLFW}"
     }
 
     links

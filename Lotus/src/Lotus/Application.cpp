@@ -14,38 +14,24 @@ namespace Lotus {
 	GLFWwindow* m_Window;
 
 	Application::Application()
-		: m_Running{true}
+		: m_Running{true}, m_Window{"Lotus Engine", 1280, 720}
 	{
-		LOTUS_CORE_INFO("HELLO WORLD");
+		LOTUS_CORE_ASSERT(!s_Instance, "Application already exists!");
+		s_Instance = this;
 
-		glfwInit();
-
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		m_Window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
-
-		uint32_t extensionCount = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-		std::cout << extensionCount << " extensions supported\n";
-
-		glm::mat4 matrix;
-		glm::vec4 vec;
-		auto test = matrix * vec;
 	}
 
 
 	Application::~Application()
 	{
-		glfwDestroyWindow(m_Window);
 
-		glfwTerminate();
 	}
 
 	void Application::Run()
 	{
-		while (!glfwWindowShouldClose(m_Window))
+		while (m_Running)
 		{
-			glfwPollEvents();
+			m_Window.Update();
 		}
 	}
 

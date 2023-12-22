@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Core.h"
+#include "Window/Window.h"
+
 #include "glm/glm.hpp"
 
 namespace Lotus {
 
-	class Application
+	class LOTUS_API Application
 	{
 	public:
 		Application();
@@ -14,7 +17,7 @@ namespace Lotus {
 
 	private:
 		bool m_Running;
-
+		Window m_Window;
 	private:
 		static Application* s_Instance;
 	};

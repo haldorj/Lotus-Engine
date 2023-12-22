@@ -7,6 +7,12 @@
     <Filter Include="src\Lotus">
       <UniqueIdentifier>{D32F5AB3-3F9A-0E2A-88D8-BFCFF481EC7E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Renderer">
+      <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Window">
+      <UniqueIdentifier>{74C3D837-607B-1A85-C982-F3E0B559B575}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -36,11 +42,20 @@
     <ClInclude Include="src\Lotus\Application.h">
       <Filter>src\Lotus</Filter>
     </ClInclude>
+    <ClInclude Include="src\Lotus\Core.h">
+      <Filter>src\Lotus</Filter>
+    </ClInclude>
     <ClInclude Include="src\Lotus\EntryPoint.h">
       <Filter>src\Lotus</Filter>
     </ClInclude>
     <ClInclude Include="src\Lotus\Log.h">
       <Filter>src\Lotus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Device.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window\Window.h">
+      <Filter>src\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\lotuspch.h">
       <Filter>src</Filter>
@@ -1294,6 +1309,12 @@
     </ClCompile>
     <ClCompile Include="src\Lotus\Log.cpp">
       <Filter>src\Lotus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Device.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window\Window.cpp">
+      <Filter>src\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
