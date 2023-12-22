@@ -6,8 +6,10 @@
 
 namespace Lotus {
 
-	struct QueueFamilyIndices {
+	struct QueueFamilyIndices 
+	{
 		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> presentFamily;
 
 		bool IsComplete() {
 			return graphicsFamily.has_value();
@@ -24,13 +26,15 @@ namespace Lotus {
 #endif
 
 	public:
-		VulkanDevice();
+		VulkanDevice(Window& window);
 		~VulkanDevice();
 
 		void CreateInstance();
 		void SetupDebugMessenger();
+		void CreateSurface();
 		void PickPhysicalDevice();
 		void CreateLogicalDevice();
+
 
 		// Helper functions
 		bool CheckValidationLayerSupport();
@@ -46,7 +50,11 @@ namespace Lotus {
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		VkDevice m_Device; // Logical device
+		
+		Window& m_Window;
+		VkSurfaceKHR m_Surface;
 		VkQueue m_GraphicsQueue;
+		VkQueue m_PresentQueue;
 		
 		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 

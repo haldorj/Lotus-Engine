@@ -13,11 +13,10 @@ namespace Lotus {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
-		: m_Window{ "Lotus Engine", 1280, 720 }
+		: m_Window{ "Lotus Engine", 1280, 720 }, m_Device{ m_Window }
 	{
 		LOTUS_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
-		m_Device;
 	}
 
 
