@@ -1,6 +1,8 @@
 #include "lotuspch.h"
 #include "VulkanDevice.h"
 
+#include <optional>
+
 namespace Lotus {
 
 	// Local callback functions 
@@ -10,7 +12,7 @@ namespace Lotus {
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
-		LOTUS_CORE_ERROR("validation layer: {0}", pCallbackData->pMessage);
+		LOTUS_CORE_ERROR("Validation layer: {0}", pCallbackData->pMessage);
 
 		return VK_FALSE;
 	}
@@ -52,6 +54,7 @@ namespace Lotus {
 	{
 		CreateInstance();
 		SetupDebugMessenger();
+		PickPhysicalDevice();
 	}
 
 	VulkanDevice::~VulkanDevice()
@@ -106,7 +109,7 @@ namespace Lotus {
 			createInfo.pNext = nullptr;
 		}
 		if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS) {
-			LOTUS_CORE_ERROR("failed to create instance!");
+			LOTUS_CORE_ERROR("Failed to create instance!");
 		}
 	}
 
@@ -131,6 +134,68 @@ namespace Lotus {
 		{
 			LOTUS_CORE_ERROR("Failed to set up debug messenger!");
 		}
+	}
+
+	void VulkanDevice::PickPhysicalDevice()
+	{
+		uint32_t deviceCount = 0;
+		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+		if (deviceCount == 0)
+		{
+			LOTUS_CORE_ERROR("Failed to find GPUs with Vulkan support!");
+		}
+		LOTUS_CORE_INFO("Device count: {0}", deviceCount);
+		std::vector<VkPhysicalDevice> devices(deviceCount);
+		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+
+		for (const auto& device : devices)
+		{
+			if (IsDeviceSuitable(device))
+			{
+				m_PhysicalDevice = device;
+				break;
+			}
+		}
+
+		if (m_PhysicalDevice == VK_NULL_HANDLE)
+		{
+			LOTUS_CORE_ERROR("Failed to find a suitable GPU!");
+		}
+
+		vkGetPhysicalDeviceProperties(m_PhysicalDevice, &properties);
+		LOTUS_CORE_INFO("Physical device: {0}", properties.deviceName);
+	}
+
+	bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
+	{
+		QueueFamilyIndices indices = FindQueueFamilies(device);
+
+		return indices.IsComplete();
+	}
+
+	QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
+	{
+		QueueFamilyIndices indices;
+
+		uint32_t queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+		int i = 0;
+		for (const auto& queueFamily : queueFamilies) {
+			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+				indices.graphicsFamily = i;
+			}
+			if (indices.IsComplete()) {
+				break;
+			}
+
+			i++;
+		}
+
+		return indices;
 	}
 
 	bool VulkanDevice::CheckValidationLayerSupport()
