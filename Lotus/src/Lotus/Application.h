@@ -1,5 +1,7 @@
 #pragma once
 
+#include "glm/glm.hpp"
+
 namespace Lotus {
 
 	class Application
@@ -12,6 +14,7 @@ namespace Lotus {
 
 	private:
 		bool m_Running;
+
 	private:
 		static Application* s_Instance;
 	};
