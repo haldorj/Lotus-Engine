@@ -16,6 +16,7 @@ namespace Lotus
         Renderer operator=(const Renderer&) = delete; // delete copy operator
 
         VkRenderPass GetSwapChainRenderPass() const { return m_SwapChain->GetRenderPass(); }
+        float GetAspectRatio() const { return m_SwapChain->ExtentAspectRatio(); }
         bool IsFrameInProgress() const { return m_IsFrameStarted; }
 
         VkCommandBuffer GetCurrentCommandBuffer() const {

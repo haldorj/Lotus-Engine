@@ -1320,6 +1320,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Camera\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp">
@@ -1353,5 +1354,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Camera\Camera.cpp" />
   </ItemGroup>
 </Project>

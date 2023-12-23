@@ -4,6 +4,7 @@
 #include "Pipeline.h"
 #include "Device.h"
 #include "Lotus/GameObject.h"
+#include "Camera/Camera.h"
 
 #include <memory>
 
@@ -18,7 +19,7 @@ namespace Lotus
         SimpleRenderSystem(const SimpleRenderSystem&) = delete; // delete copy constructor
         SimpleRenderSystem operator=(const SimpleRenderSystem&) = delete; // delete copy operator
 
-        void RenderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject>& gameObjects);
+        void RenderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject>& gameObjects, const Camera& camera);
     private:
         void CreatePipelineLayout();
         void CreatePipeline(VkRenderPass renderPass);
