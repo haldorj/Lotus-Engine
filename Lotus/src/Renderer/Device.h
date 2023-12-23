@@ -85,7 +85,7 @@ namespace Lotus
         void CreateCommandPool();
 
         // helper functions
-        bool IsDeviceSuitable(VkPhysicalDevice device);
+        //bool IsDeviceSuitable(VkPhysicalDevice device);
         std::vector<const char*> GetRequiredExtensions();
         bool CheckValidationLayerSupport();
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);

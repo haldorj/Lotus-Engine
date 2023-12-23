@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Lotus\GameObject.h" />
     <ClInclude Include="src\Lotus.h" />
     <ClInclude Include="src\Lotus\Application.h" />
     <ClInclude Include="src\Lotus\Core.h" />
@@ -570,6 +571,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Lotus\GameObject.cpp" />
     <ClCompile Include="src\Lotus\Application.cpp" />
     <ClCompile Include="src\Lotus\Log.cpp" />
     <ClCompile Include="src\Renderer\Device.cpp" />
