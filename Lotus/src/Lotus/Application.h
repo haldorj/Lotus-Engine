@@ -6,6 +6,7 @@
 #include "Renderer/Device.h"
 #include "Renderer/SwapChain.h"
 #include "Renderer/Pipeline.h"
+#include "Renderer/Model.h"
 
 namespace Lotus {
 
@@ -24,19 +25,21 @@ namespace Lotus {
         void Run();
 
     private:
+        void LoadModels();
         void CreatePipelineLayout();
         void CreatePipeline();
         void CreateCommandBuffers();
         void DrawFrame();
 
     private:
-        Window m_Window{ "Virus Engine", WIDTH, HEIGHT };
+        Window m_Window{ "Lotus Engine", WIDTH, HEIGHT };
         Device m_Device{ m_Window };
         SwapChain m_SwapChain{ m_Device, m_Window.GetExtent() };
 
         std::unique_ptr<Pipeline> m_Pipeline;
-        VkPipelineLayout m_PipelineLayout;
+        VkPipelineLayout m_PipelineLayout{};
         std::vector<VkCommandBuffer> m_CommandBuffers;
+        std::unique_ptr<Model> m_Model;
     };
 
     // To be defined in Client

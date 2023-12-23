@@ -12,6 +12,7 @@ namespace Lotus {
 
     Application::Application()
     {
+        LoadModels();
         CreatePipelineLayout();
         CreatePipeline();
         CreateCommandBuffers();
@@ -19,6 +20,7 @@ namespace Lotus {
 
     Application::~Application()
     {
+        vkDeviceWaitIdle(m_Device.GetDevice());
         vkDestroyPipelineLayout(m_Device.GetDevice(), m_PipelineLayout, nullptr);
     }
 
@@ -29,6 +31,14 @@ namespace Lotus {
             m_Window.Update();
             DrawFrame();
         }
+    }
+
+    void Application::LoadModels()
+    {
+        std::vector<Model::Vertex> vertices{ 
+                {{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}} 
+        };
+        m_Model = std::make_unique<Model>(m_Device, vertices);
     }
 
     void Application::CreatePipelineLayout()
@@ -42,7 +52,7 @@ namespace Lotus {
 
         if (vkCreatePipelineLayout(m_Device.GetDevice(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
         {
-            throw std::runtime_error("failed to create pipeline layout!");
+            LOTUS_CORE_ERROR("failed to create pipeline layout!");
         }
     }
 
@@ -75,7 +85,7 @@ namespace Lotus {
         allocInfo.commandBufferCount = static_cast<uint32_t>(m_CommandBuffers.size());
         if (vkAllocateCommandBuffers(m_Device.GetDevice(), &allocInfo, m_CommandBuffers.data()) != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to allocate command buffers");
+            LOTUS_CORE_ERROR("Failed to allocate command buffers");
         }
         for (int i = 0; i < m_CommandBuffers.size(); i++)
         {
@@ -84,7 +94,7 @@ namespace Lotus {
 
             if (vkBeginCommandBuffer(m_CommandBuffers[i], &beginInfo) != VK_SUCCESS)
             {
-                throw std::runtime_error("Failed to begin recording command buffer");
+                LOTUS_CORE_ERROR("Failed to begin recording command buffer");
             }
             VkRenderPassBeginInfo renderPassInfo{};
             renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -103,12 +113,13 @@ namespace Lotus {
             vkCmdBeginRenderPass(m_CommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             m_Pipeline->Bind(m_CommandBuffers[i]);
-            vkCmdDraw(m_CommandBuffers[i], 3, 1, 0, 0);
+            m_Model->Bind(m_CommandBuffers[i]);
+            m_Model->Draw(m_CommandBuffers[i]);
 
             vkCmdEndRenderPass(m_CommandBuffers[i]);
             if (vkEndCommandBuffer(m_CommandBuffers[i]) != VK_SUCCESS)
             {
-                throw std::runtime_error("Failed to record command buffer");
+                LOTUS_CORE_ERROR("Failed to record command buffer");
             }
         }
     }
@@ -119,12 +130,12 @@ namespace Lotus {
         auto result = m_SwapChain.AcquireNextImage(&imageIndex);
         if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
         {
-            throw std::runtime_error("Failed to acquire swap chain image");
+            LOTUS_CORE_ERROR("Failed to acquire swap chain image");
         }
         result = m_SwapChain.SubmitCommandBuffers(&m_CommandBuffers[imageIndex], &imageIndex);
         if (result != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to present swap chain image");
+            LOTUS_CORE_ERROR("Failed to present swap chain image");
         }
     }
 

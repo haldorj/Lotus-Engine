@@ -54,6 +54,12 @@
     <ClInclude Include="src\Renderer\Device.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Model.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Pipeline.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\SwapChain.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -1305,7 +1311,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\Pipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp">
@@ -1317,6 +1322,12 @@
     <ClCompile Include="src\Renderer\Device.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Model.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Pipeline.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\SwapChain.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
@@ -1326,6 +1337,5 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Pipeline.cpp" />
   </ItemGroup>
 </Project>

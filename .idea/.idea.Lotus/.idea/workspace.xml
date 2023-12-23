@@ -5,17 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb69790e-cd79-4354-8870-d726d7fa1081" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Lotus/Compile.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lotus/Shaders/SimpleShader.frag" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lotus/src/Renderer/Pipeline.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lotus/src/Renderer/Pipeline.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lotus/src/Renderer/Model.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lotus/src/Renderer/Model.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lotus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Lotus/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/Lotus.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/Lotus.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lotus/Shaders/SimpleShader.vert" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/Shaders/SimpleShader.vert" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lotus/Shaders/simpleshader.vert.spv" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/Shaders/simpleshader.vert.spv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/src/Lotus/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Lotus/Application.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/src/Lotus/Application.h" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Lotus/Application.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/VulkanDevice.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/VulkanDevice.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/VulkanSwapChain.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/VulkanSwapChain.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/Pipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Renderer/Pipeline.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/vendor/GLFW" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/vendor/GLFW" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.log" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.tlog/CL.command.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.tlog/CL.command.1.tlog" afterDir="false" />
@@ -140,7 +138,7 @@
       <updated>1703315959173</updated>
       <workItem from="1703315962445" duration="711000" />
       <workItem from="1703329117214" duration="233000" />
-      <workItem from="1703329376800" duration="1220000" />
+      <workItem from="1703329376800" duration="2457000" />
     </task>
     <servers />
   </component>
