@@ -143,15 +143,17 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Lotus\GameObject.h" />
     <ClInclude Include="src\Lotus.h" />
     <ClInclude Include="src\Lotus\Application.h" />
     <ClInclude Include="src\Lotus\Core.h" />
     <ClInclude Include="src\Lotus\EntryPoint.h" />
+    <ClInclude Include="src\Lotus\GameObject.h" />
     <ClInclude Include="src\Lotus\Log.h" />
     <ClInclude Include="src\Renderer\Device.h" />
     <ClInclude Include="src\Renderer\Model.h" />
     <ClInclude Include="src\Renderer\Pipeline.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\Renderer\SimpleRenderSystem.h" />
     <ClInclude Include="src\Renderer\SwapChain.h" />
     <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="src\lotuspch.h" />
@@ -571,12 +573,14 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Lotus\GameObject.cpp" />
     <ClCompile Include="src\Lotus\Application.cpp" />
+    <ClCompile Include="src\Lotus\GameObject.cpp" />
     <ClCompile Include="src\Lotus\Log.cpp" />
     <ClCompile Include="src\Renderer\Device.cpp" />
     <ClCompile Include="src\Renderer\Model.cpp" />
     <ClCompile Include="src\Renderer\Pipeline.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Renderer\SimpleRenderSystem.cpp" />
     <ClCompile Include="src\Renderer\SwapChain.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\lotuspch.cpp">

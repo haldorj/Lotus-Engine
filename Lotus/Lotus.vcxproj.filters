@@ -48,6 +48,9 @@
     <ClInclude Include="src\Lotus\EntryPoint.h">
       <Filter>src\Lotus</Filter>
     </ClInclude>
+    <ClInclude Include="src\Lotus\GameObject.h">
+      <Filter>src\Lotus</Filter>
+    </ClInclude>
     <ClInclude Include="src\Lotus\Log.h">
       <Filter>src\Lotus</Filter>
     </ClInclude>
@@ -58,6 +61,12 @@
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Pipeline.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Renderer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\SimpleRenderSystem.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\SwapChain.h">
@@ -1311,10 +1320,12 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lotus\GameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp">
+      <Filter>src\Lotus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lotus\GameObject.cpp">
       <Filter>src\Lotus</Filter>
     </ClCompile>
     <ClCompile Include="src\Lotus\Log.cpp">
@@ -1329,6 +1340,9 @@
     <ClCompile Include="src\Renderer\Pipeline.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\SimpleRenderSystem.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\SwapChain.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
@@ -1338,6 +1352,6 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Lotus\GameObject.cpp" />
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
   </ItemGroup>
 </Project>

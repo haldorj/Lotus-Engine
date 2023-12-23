@@ -23,7 +23,7 @@ namespace Lotus {
         ~Model();
 
         Model(const Model&) = delete; // delete copy constructor
-        void operator=(const Model&) = delete; // delete copy operator
+        Model operator=(const Model&) = delete; // delete copy operator
 
         void Bind(VkCommandBuffer commandBuffer);
         void Draw(VkCommandBuffer commandBuffer);

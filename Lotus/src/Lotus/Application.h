@@ -4,9 +4,8 @@
 #include "Log.h"
 #include "Window/Window.h"
 #include "Renderer/Device.h"
-#include "Renderer/SwapChain.h"
-#include "Renderer/Pipeline.h"
 #include "Lotus/GameObject.h"
+#include "Renderer/Renderer.h"
 
 namespace Lotus {
 
@@ -17,32 +16,21 @@ namespace Lotus {
         ~Application();
 
         Application(const Application&) = delete; // delete copy constructor
-        void operator=(const Application&) = delete; // delete copy operator
+        Application operator=(const Application&) = delete; // delete copy operator
 
-        static constexpr uint32_t WIDTH = 1280;
-        static constexpr uint32_t HEIGHT = 720;
+        static constexpr uint32_t WIDTH = 800;
+        static constexpr uint32_t HEIGHT = 600;
 
         void Run();
 
     private:
         void LoadGameObjects();
-        void CreatePipelineLayout();
-        void CreatePipeline();
-        void CreateCommandBuffers();
-        void FreeCommandBuffers();
-        void DrawFrame();
-        void RecreateSwapChain();
-        void RecordCommandBuffer(int imageIndex);
-        void RenderGameObjects(VkCommandBuffer commandBuffer);
 
     private:
         Window m_Window{ "Lotus Engine", WIDTH, HEIGHT };
         Device m_Device{ m_Window };
-        std::unique_ptr<SwapChain> m_SwapChain;
+        Renderer m_Renderer{ m_Window, m_Device };
 
-        std::unique_ptr<Pipeline> m_Pipeline;
-        VkPipelineLayout m_PipelineLayout;
-        std::vector<VkCommandBuffer> m_CommandBuffers;
         std::vector<GameObject> m_GameObjects;
     };
 
