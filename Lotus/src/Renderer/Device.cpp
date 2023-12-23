@@ -123,30 +123,65 @@ namespace Lotus
     {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+
         if (deviceCount == 0)
-        {
             throw std::runtime_error("failed to find GPUs with Vulkan support!");
-        }
-        std::cout << "Device count: " << deviceCount << std::endl;
+
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 
-        for (const auto& device : devices)
-        {
-            if (IsDeviceSuitable(device))
-            {
-                m_PhysicalDevice = device;
-                break;
-            }
-        }
-
-        if (m_PhysicalDevice == VK_NULL_HANDLE)
-        {
-            throw std::runtime_error("failed to find a suitable GPU!");
-        }
+        m_PhysicalDevice = FindSuitableDevice(devices);
 
         vkGetPhysicalDeviceProperties(m_PhysicalDevice, &properties);
         std::cout << "physical device: " << properties.deviceName << std::endl;
+    }
+
+    int Device::RateDeviceSuitability(VkPhysicalDevice device)
+    {
+        int score = 0;
+
+        VkPhysicalDeviceProperties deviceProperties;
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+        // Discrete GPUs have a significant performance advantage
+        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+            score += 1000;
+        }
+
+        // Maximum possible size of textures affects graphics quality
+        score += deviceProperties.limits.maxImageDimension2D;
+
+        // Application can't function without geometry shaders
+        if (!deviceFeatures.geometryShader) {
+            return 0;
+        }
+
+        return score;
+
+    }
+
+    VkPhysicalDevice Device::FindSuitableDevice(const std::vector<VkPhysicalDevice>& devices)
+    {
+        VkPhysicalDevice suitableDevice = VK_NULL_HANDLE;
+        int highestScore = -1;
+
+        for (const auto& device : devices)
+        {
+            int score = RateDeviceSuitability(device);
+
+            if (score > highestScore)
+            {
+                highestScore = score;
+                suitableDevice = device;
+            }
+        }
+
+        if (suitableDevice == VK_NULL_HANDLE)
+            throw std::runtime_error("failed to find a suitable GPU!");
+
+        return suitableDevice;
     }
 
     void Device::CreateLogicalDevice()
@@ -219,7 +254,7 @@ namespace Lotus
 
     void Device::CreateSurface() { m_Window.CreateWindowSurface(m_Instance, &m_Surface); }
 
-    bool Device::IsDeviceSuitable(VkPhysicalDevice device)
+  /*  bool Device::IsDeviceSuitable(VkPhysicalDevice device)
     {
         QueueFamilyIndices indices = FindQueueFamilies(device);
 
@@ -237,7 +272,7 @@ namespace Lotus
 
         return indices.IsComplete() && extensionsSupported && swapChainAdequate &&
             supportedFeatures.samplerAnisotropy;
-    }
+    }*/
 
     void Device::PopulateDebugMessengerCreateInfo(
         VkDebugUtilsMessengerCreateInfoEXT& createInfo)

@@ -80,6 +80,7 @@ namespace Lotus
         void CreateSurface();
         void PickPhysicalDevice();
         int RateDeviceSuitability(VkPhysicalDevice device);
+        VkPhysicalDevice FindSuitableDevice(const std::vector<VkPhysicalDevice>& devices);
         void CreateLogicalDevice();
         void CreateCommandPool();
 
