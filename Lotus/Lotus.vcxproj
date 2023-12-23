@@ -148,8 +148,9 @@
     <ClInclude Include="src\Lotus\Core.h" />
     <ClInclude Include="src\Lotus\EntryPoint.h" />
     <ClInclude Include="src\Lotus\Log.h" />
-    <ClInclude Include="src\Renderer\VulkanDevice.h" />
-    <ClInclude Include="src\Renderer\VulkanSwapChain.h" />
+    <ClInclude Include="src\Renderer\Pipeline.h" />
+    <ClInclude Include="src\Renderer\Device.h" />
+    <ClInclude Include="src\Renderer\SwapChain.h" />
     <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="src\lotuspch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -570,8 +571,9 @@
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp" />
     <ClCompile Include="src\Lotus\Log.cpp" />
-    <ClCompile Include="src\Renderer\VulkanDevice.cpp" />
-    <ClCompile Include="src\Renderer\VulkanSwapChain.cpp" />
+    <ClCompile Include="src\Renderer\Pipeline.cpp" />
+    <ClCompile Include="src\Renderer\Device.cpp" />
+    <ClCompile Include="src\Renderer\SwapChain.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\lotuspch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -584,6 +586,11 @@
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Compile.bat" />
+    <Content Include="Shaders\SimpleShader.frag" />
+    <Content Include="Shaders\SimpleShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

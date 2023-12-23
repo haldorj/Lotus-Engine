@@ -1,7 +1,6 @@
 #pragma once
 
-#include "VulkanDevice.h"
-
+#include "Device.h"
 
 // std lib headers
 #include <vector>
@@ -10,17 +9,17 @@
 
 namespace Lotus
 {
-    class VulkanSwapChain
+    class SwapChain
     {
     public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-        VulkanSwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent);
-        VulkanSwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<VulkanSwapChain> previous);
-        ~VulkanSwapChain();
+        SwapChain(Device& deviceRef, VkExtent2D windowExtent);
+        SwapChain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
+        ~SwapChain();
 
-        VulkanSwapChain(const VulkanSwapChain&) = delete;
-        VulkanSwapChain& operator=(const VulkanSwapChain&) = delete;
+        SwapChain(const SwapChain&) = delete;
+        SwapChain& operator=(const SwapChain&) = delete;
 
         VkFramebuffer GetFrameBuffer(int index) const { return m_SwapChainFramebuffers[index]; }
         VkRenderPass GetRenderPass() const { return m_RenderPass; }
@@ -41,7 +40,7 @@ namespace Lotus
         VkResult AcquireNextImage(uint32_t* imageIndex);
         VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
-        bool CompareSwapFormats(const VulkanSwapChain& swapChain) const
+        bool CompareSwapFormats(const SwapChain& swapChain) const
         {
             return swapChain.m_SwapChainDepthFormat == m_SwapChainDepthFormat &&
                 swapChain.m_SwapChainImageFormat == m_SwapChainImageFormat;
@@ -76,11 +75,11 @@ namespace Lotus
         std::vector<VkImage> m_SwapChainImages;
         std::vector<VkImageView> m_SwapChainImageViews;
 
-        VulkanDevice& m_Device;
+        Device& m_Device;
         VkExtent2D m_WindowExtent;
 
         VkSwapchainKHR m_SwapChain;
-        std::shared_ptr<VulkanSwapChain> m_OldSwapChain;
+        std::shared_ptr<SwapChain> m_OldSwapChain;
 
         std::vector<VkSemaphore> m_ImageAvailableSemaphores;
         std::vector<VkSemaphore> m_RenderFinishedSemaphores;

@@ -1,16 +1,16 @@
 #include "lotuspch.h"
-#include "VulkanSwapChain.h"
+#include "SwapChain.h"
 
-namespace Lotus {
-
-    VulkanSwapChain::VulkanSwapChain(VulkanDevice& deviceRef, VkExtent2D extent)
+namespace Lotus
+{
+    SwapChain::SwapChain(Device& deviceRef, VkExtent2D extent)
         : m_Device{ deviceRef }, m_WindowExtent{ extent }
     {
         Init();
     }
 
-    VulkanSwapChain::VulkanSwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<VulkanSwapChain> previous)
-        : m_Device{ deviceRef }, m_WindowExtent{ windowExtent }, m_OldSwapChain{ previous }
+    SwapChain::SwapChain(Device& deviceRef, VkExtent2D extent, std::shared_ptr<SwapChain> previous)
+        : m_Device{ deviceRef }, m_WindowExtent{ extent }, m_OldSwapChain{ previous }
     {
         Init();
 
@@ -18,7 +18,7 @@ namespace Lotus {
         m_OldSwapChain = nullptr;
     }
 
-    VulkanSwapChain::~VulkanSwapChain()
+    SwapChain::~SwapChain()
     {
         for (const auto imageView : m_SwapChainImageViews)
         {
@@ -55,7 +55,7 @@ namespace Lotus {
         }
     }
 
-    void VulkanSwapChain::Init()
+    void SwapChain::Init()
     {
         CreateSwapChain();
         CreateImageViews();
@@ -65,7 +65,7 @@ namespace Lotus {
         CreateSyncObjects();
     }
 
-    VkResult VulkanSwapChain::AcquireNextImage(uint32_t* imageIndex)
+    VkResult SwapChain::AcquireNextImage(uint32_t* imageIndex)
     {
         vkWaitForFences(
             m_Device.GetDevice(),
@@ -85,7 +85,7 @@ namespace Lotus {
         return result;
     }
 
-    VkResult VulkanSwapChain::SubmitCommandBuffers(
+    VkResult SwapChain::SubmitCommandBuffers(
         const VkCommandBuffer* buffers, uint32_t* imageIndex)
     {
         if (m_ImagesInFlight[*imageIndex] != VK_NULL_HANDLE)
@@ -136,7 +136,7 @@ namespace Lotus {
         return result;
     }
 
-    void VulkanSwapChain::CreateSwapChain()
+    void SwapChain::CreateSwapChain()
     {
         const SwapChainSupportDetails swapChainSupport = m_Device.GetSwapChainSupport();
 
@@ -188,7 +188,7 @@ namespace Lotus {
 
         if (vkCreateSwapchainKHR(m_Device.GetDevice(), &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to create swap chain!");
+            throw std::runtime_error("failed to create swap chain!");
         }
 
         // we only specified a minimum number of images in the swap chain, so the implementation is
@@ -203,7 +203,7 @@ namespace Lotus {
         m_SwapChainExtent = extent;
     }
 
-    void VulkanSwapChain::CreateImageViews()
+    void SwapChain::CreateImageViews()
     {
         m_SwapChainImageViews.resize(m_SwapChainImages.size());
         for (size_t i = 0; i < m_SwapChainImages.size(); i++)
@@ -227,7 +227,7 @@ namespace Lotus {
         }
     }
 
-    void VulkanSwapChain::CreateRenderPass()
+    void SwapChain::CreateRenderPass()
     {
         VkAttachmentDescription depthAttachment{};
         depthAttachment.format = FindDepthFormat();
@@ -290,7 +290,7 @@ namespace Lotus {
         }
     }
 
-    void VulkanSwapChain::CreateFramebuffers()
+    void SwapChain::CreateFramebuffers()
     {
         m_SwapChainFramebuffers.resize(ImageCount());
         for (size_t i = 0; i < ImageCount(); i++)
@@ -318,7 +318,7 @@ namespace Lotus {
         }
     }
 
-    void VulkanSwapChain::CreateDepthResources()
+    void SwapChain::CreateDepthResources()
     {
         const VkFormat depthFormat = FindDepthFormat();
         m_SwapChainDepthFormat = depthFormat;
@@ -370,7 +370,7 @@ namespace Lotus {
         }
     }
 
-    void VulkanSwapChain::CreateSyncObjects()
+    void SwapChain::CreateSyncObjects()
     {
         m_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         m_RenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -397,7 +397,7 @@ namespace Lotus {
         }
     }
 
-    VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(
+    VkSurfaceFormatKHR SwapChain::ChooseSwapSurfaceFormat(
         const std::vector<VkSurfaceFormatKHR>& availableFormats)
     {
         for (const auto& availableFormat : availableFormats)
@@ -412,7 +412,7 @@ namespace Lotus {
         return availableFormats[0];
     }
 
-    VkPresentModeKHR VulkanSwapChain::ChooseSwapPresentMode(
+    VkPresentModeKHR SwapChain::ChooseSwapPresentMode(
         const std::vector<VkPresentModeKHR>& availablePresentModes)
     {
         for (const auto& availablePresentMode : availablePresentModes)
@@ -437,7 +437,7 @@ namespace Lotus {
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
-    VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
+    VkExtent2D SwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
     {
         if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         {
@@ -457,7 +457,7 @@ namespace Lotus {
         }
     }
 
-    VkFormat VulkanSwapChain::FindDepthFormat()
+    VkFormat SwapChain::FindDepthFormat()
     {
         return m_Device.FindSupportedFormat(
             { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },

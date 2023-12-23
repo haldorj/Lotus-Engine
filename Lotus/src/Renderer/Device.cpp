@@ -1,5 +1,5 @@
 #include "lotuspch.h"
-#include "VulkanDevice.h"
+#include "Device.h"
 
 namespace Lotus
 {
@@ -10,7 +10,8 @@ namespace Lotus
         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
         void* pUserData)
     {
-        LOTUS_CORE_ERROR("validation layer: {0}", pCallbackData->pMessage);
+        std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+
         return VK_FALSE;
     }
 
@@ -48,7 +49,7 @@ namespace Lotus
     }
 
     // class member functions
-    VulkanDevice::VulkanDevice(Window& window) : m_Window{ window }
+    Device::Device(Window& window) : m_Window{ window }
     {
         CreateInstance();
         SetupDebugMessenger();
@@ -58,7 +59,7 @@ namespace Lotus
         CreateCommandPool();
     }
 
-    VulkanDevice::~VulkanDevice()
+    Device::~Device()
     {
         vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
         vkDestroyDevice(m_Device, nullptr);
@@ -72,11 +73,11 @@ namespace Lotus
         vkDestroyInstance(m_Instance, nullptr);
     }
 
-    void VulkanDevice::CreateInstance()
+    void Device::CreateInstance()
     {
         if (enableValidationLayers && !CheckValidationLayerSupport())
         {
-            LOTUS_CORE_ERROR("validation layers requested, but not available!");
+            throw std::runtime_error("validation layers requested, but not available!");
         }
 
         VkApplicationInfo appInfo = {};
@@ -112,21 +113,21 @@ namespace Lotus
 
         if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to create instance!");
+            throw std::runtime_error("failed to create instance!");
         }
 
         HasGflwRequiredInstanceExtensions();
     }
 
-    void VulkanDevice::PickPhysicalDevice()
+    void Device::PickPhysicalDevice()
     {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
         if (deviceCount == 0)
         {
-            LOTUS_CORE_ERROR("failed to find GPUs with Vulkan support!");
+            throw std::runtime_error("failed to find GPUs with Vulkan support!");
         }
-        LOTUS_CORE_INFO("found {0} GPUs with Vulkan support!", deviceCount);
+        std::cout << "Device count: " << deviceCount << std::endl;
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 
@@ -139,59 +140,16 @@ namespace Lotus
             }
         }
 
-        if (deviceCount > 1)
-        {
-            std::map<int, VkPhysicalDevice> candidates;
-
-            for (const auto& device : devices) {
-                int score = RateDeviceSuitability(device);
-                candidates.insert(std::make_pair(score, device));
-            }
-
-            // Check if the best candidate is suitable at all
-            if (candidates.rbegin()->first > 0) {
-                m_PhysicalDevice = candidates.rbegin()->second;
-            }
-        }
-
         if (m_PhysicalDevice == VK_NULL_HANDLE)
         {
-            LOTUS_CORE_ERROR("failed to find a suitable GPU!");
+            throw std::runtime_error("failed to find a suitable GPU!");
         }
 
         vkGetPhysicalDeviceProperties(m_PhysicalDevice, &properties);
-        LOTUS_CORE_INFO("physical device: {0}", properties.deviceName);
+        std::cout << "physical device: " << properties.deviceName << std::endl;
     }
 
-    int VulkanDevice::RateDeviceSuitability(VkPhysicalDevice device)
-    {
-        int score = 0;
-
-        VkPhysicalDeviceProperties deviceProperties;
-        VkPhysicalDeviceFeatures deviceFeatures;
-        vkGetPhysicalDeviceProperties(device, &deviceProperties);
-        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-
-        // Discrete GPUs have a significant performance advantage
-        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
-            score += 1000;
-        }
-
-        // Maximum possible size of textures affects graphics quality
-        score += deviceProperties.limits.maxImageDimension2D;
-
-        // Application can't function without geometry shaders
-        if (!deviceFeatures.geometryShader) {
-            return 0;
-        }
-
-        return score;
-
-        return 0;
-    }
-
-
-    void VulkanDevice::CreateLogicalDevice()
+    void Device::CreateLogicalDevice()
     {
         QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
 
@@ -236,14 +194,14 @@ namespace Lotus
 
         if (vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to create logical device!");
+            throw std::runtime_error("failed to create logical device!");
         }
 
         vkGetDeviceQueue(m_Device, indices.graphicsFamily, 0, &m_GraphicsQueue);
         vkGetDeviceQueue(m_Device, indices.presentFamily, 0, &m_PresentQueue);
     }
 
-    void VulkanDevice::CreateCommandPool()
+    void Device::CreateCommandPool()
     {
         const QueueFamilyIndices queueFamilyIndices = FindPhysicalQueueFamilies();
 
@@ -255,13 +213,13 @@ namespace Lotus
 
         if (vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to create command pool!");
+            throw std::runtime_error("failed to create command pool!");
         }
     }
 
-    void VulkanDevice::CreateSurface() { m_Window.CreateWindowSurface(m_Instance, &m_Surface); }
+    void Device::CreateSurface() { m_Window.CreateWindowSurface(m_Instance, &m_Surface); }
 
-    bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
+    bool Device::IsDeviceSuitable(VkPhysicalDevice device)
     {
         QueueFamilyIndices indices = FindQueueFamilies(device);
 
@@ -281,7 +239,7 @@ namespace Lotus
             supportedFeatures.samplerAnisotropy;
     }
 
-    void VulkanDevice::PopulateDebugMessengerCreateInfo(
+    void Device::PopulateDebugMessengerCreateInfo(
         VkDebugUtilsMessengerCreateInfoEXT& createInfo)
     {
         createInfo = {};
@@ -295,18 +253,18 @@ namespace Lotus
         createInfo.pUserData = nullptr; // Optional
     }
 
-    void VulkanDevice::SetupDebugMessenger()
+    void Device::SetupDebugMessenger()
     {
         if (!enableValidationLayers) return;
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         PopulateDebugMessengerCreateInfo(createInfo);
         if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to set up debug messenger!");
+            throw std::runtime_error("failed to set up debug messenger!");
         }
     }
 
-    bool VulkanDevice::CheckValidationLayerSupport()
+    bool Device::CheckValidationLayerSupport()
     {
         uint32_t layerCount;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -336,7 +294,7 @@ namespace Lotus
         return true;
     }
 
-    std::vector<const char*> VulkanDevice::GetRequiredExtensions()
+    std::vector<const char*> Device::GetRequiredExtensions()
     {
         uint32_t glfwExtensionCount = 0;
         const char** glfwExtensions;
@@ -352,34 +310,34 @@ namespace Lotus
         return extensions;
     }
 
-    void VulkanDevice::HasGflwRequiredInstanceExtensions()
+    void Device::HasGflwRequiredInstanceExtensions()
     {
         uint32_t extensionCount = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
 
-        LOTUS_CORE_INFO("available extensions:");
+        std::cout << "available extensions:" << std::endl;
         std::unordered_set<std::string> available;
         for (const auto& extension : extensions)
         {
-            LOTUS_CORE_TRACE("\t{0}", extension.extensionName);
+            std::cout << "\t" << extension.extensionName << std::endl;
             available.insert(extension.extensionName);
         }
 
-        LOTUS_CORE_INFO("required extensions:");
+        std::cout << "required extensions:" << std::endl;
         const auto requiredExtensions = GetRequiredExtensions();
         for (const auto& required : requiredExtensions)
         {
-            LOTUS_CORE_TRACE("\t{0}", required);
+            std::cout << "\t" << required << std::endl;
             if (available.find(required) == available.end())
             {
-                LOTUS_CORE_ERROR("Missing required glfw extension");
+                throw std::runtime_error("Missing required glfw extension");
             }
         }
     }
 
-    bool VulkanDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+    bool Device::CheckDeviceExtensionSupport(VkPhysicalDevice device)
     {
         uint32_t extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -401,7 +359,7 @@ namespace Lotus
         return requiredExtensions.empty();
     }
 
-    QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
+    QueueFamilyIndices Device::FindQueueFamilies(VkPhysicalDevice device)
     {
         QueueFamilyIndices indices;
 
@@ -437,7 +395,7 @@ namespace Lotus
         return indices;
     }
 
-    SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
+    SwapChainSupportDetails Device::QuerySwapChainSupport(VkPhysicalDevice device)
     {
         SwapChainSupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Surface, &details.capabilities);
@@ -466,7 +424,7 @@ namespace Lotus
         return details;
     }
 
-    VkFormat VulkanDevice::FindSupportedFormat(
+    VkFormat Device::FindSupportedFormat(
         const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
     {
         for (const VkFormat format : candidates)
@@ -484,10 +442,10 @@ namespace Lotus
                 return format;
             }
         }
-        LOTUS_CORE_ERROR("failed to find supported format!");
+        throw std::runtime_error("failed to find supported format!");
     }
 
-    uint32_t VulkanDevice::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    uint32_t Device::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
     {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
@@ -499,10 +457,11 @@ namespace Lotus
                 return i;
             }
         }
-        LOTUS_CORE_ERROR("failed to find suitable memory type!");
+
+        throw std::runtime_error("failed to find suitable memory type!");
     }
 
-    void VulkanDevice::CreateBuffer(
+    void Device::CreateBuffer(
         VkDeviceSize size,
         VkBufferUsageFlags usage,
         VkMemoryPropertyFlags properties,
@@ -517,7 +476,7 @@ namespace Lotus
 
         if (vkCreateBuffer(m_Device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to create vertex buffer!");
+            throw std::runtime_error("failed to create vertex buffer!");
         }
 
         VkMemoryRequirements memRequirements;
@@ -530,13 +489,13 @@ namespace Lotus
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to allocate vertex buffer memory!");
+            throw std::runtime_error("failed to allocate vertex buffer memory!");
         }
 
         vkBindBufferMemory(m_Device, buffer, bufferMemory, 0);
     }
 
-    VkCommandBuffer VulkanDevice::BeginSingleTimeCommands()
+    VkCommandBuffer Device::BeginSingleTimeCommands()
     {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -555,7 +514,7 @@ namespace Lotus
         return commandBuffer;
     }
 
-    void VulkanDevice::EndSingleTimeCommands(VkCommandBuffer commandBuffer)
+    void Device::EndSingleTimeCommands(VkCommandBuffer commandBuffer)
     {
         vkEndCommandBuffer(commandBuffer);
 
@@ -570,7 +529,7 @@ namespace Lotus
         vkFreeCommandBuffers(m_Device, m_CommandPool, 1, &commandBuffer);
     }
 
-    void VulkanDevice::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+    void Device::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
     {
         const VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -583,7 +542,7 @@ namespace Lotus
         EndSingleTimeCommands(commandBuffer);
     }
 
-    void VulkanDevice::CopyBufferToImage(
+    void Device::CopyBufferToImage(
         VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount)
     {
         const VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
@@ -611,7 +570,7 @@ namespace Lotus
         EndSingleTimeCommands(commandBuffer);
     }
 
-    void VulkanDevice::CreateImageWithInfo(
+    void Device::CreateImageWithInfo(
         const VkImageCreateInfo& imageInfo,
         VkMemoryPropertyFlags properties,
         VkImage& image,
@@ -619,7 +578,7 @@ namespace Lotus
     {
         if (vkCreateImage(m_Device, &imageInfo, nullptr, &image) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to create image!");
+            throw std::runtime_error("failed to create image!");
         }
 
         VkMemoryRequirements memRequirements;
@@ -632,12 +591,12 @@ namespace Lotus
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to allocate image memory!");
+            throw std::runtime_error("failed to allocate image memory!");
         }
 
         if (vkBindImageMemory(m_Device, image, imageMemory, 0) != VK_SUCCESS)
         {
-            LOTUS_CORE_ERROR("failed to bind image memory!");
+            throw std::runtime_error("failed to bind image memory!");
         }
     }
 }

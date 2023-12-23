@@ -23,7 +23,7 @@ namespace Lotus
         bool IsComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
     };
 
-    class VulkanDevice
+    class Device
     {
     public:
 #ifdef NDEBUG
@@ -32,14 +32,14 @@ namespace Lotus
         const bool enableValidationLayers = true;
 #endif
 
-        VulkanDevice(Window& window);
-        ~VulkanDevice();
+        Device(Window& window);
+        ~Device();
 
         // Not copyable or movable
-        VulkanDevice(const VulkanDevice&) = delete;
-        VulkanDevice& operator=(const VulkanDevice&) = delete;
-        VulkanDevice(VulkanDevice&&) = delete;
-        VulkanDevice& operator=(VulkanDevice&&) = delete;
+        Device(const Device&) = delete;
+        Device& operator=(const Device&) = delete;
+        Device(Device&&) = delete;
+        Device& operator=(Device&&) = delete;
 
         VkCommandPool GetCommandPool() const { return m_CommandPool; }
         VkDevice GetDevice() const { return m_Device; }
