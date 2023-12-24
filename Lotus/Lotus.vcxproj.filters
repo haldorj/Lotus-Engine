@@ -1326,6 +1326,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Input\KeyboardMovementController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1364,5 +1365,6 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Input\KeyboardMovementController.cpp" />
   </ItemGroup>
 </Project>

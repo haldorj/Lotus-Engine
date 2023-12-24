@@ -1,5 +1,6 @@
 #pragma once
 
+#include "glm/ext/matrix_transform.hpp"
 #include "Renderer/Model.h"
 
 namespace Lotus
@@ -8,38 +9,36 @@ namespace Lotus
 	{
 		glm::vec3 translation{};
 		glm::vec3 scale{ 1.f, 1.f, 1.f };
-		glm::vec3 rotation;
+		glm::vec3 rotation{};
+		
+		glm::mat4 GetTransform() const
+		{
+			glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), translation);
+			glm::mat4 rotationMatrix =
+				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), scale);
 
-		// Matrix corrsponds to Translate * Ry * Rx * Rz * Scale
-		// Rotations correspond to Tait-bryan angles of Y(1), X(2), Z(3)
-		// https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
-		glm::mat4 mat4() {
-			const float c3 = glm::cos(rotation.z);
-			const float s3 = glm::sin(rotation.z);
-			const float c2 = glm::cos(rotation.x);
-			const float s2 = glm::sin(rotation.x);
-			const float c1 = glm::cos(rotation.y);
-			const float s1 = glm::sin(rotation.y);
-			return glm::mat4{
-				{
-					scale.x * (c1 * c3 + s1 * s2 * s3),
-					scale.x * (c2 * s3),
-					scale.x * (c1 * s2 * s3 - c3 * s1),
-					0.0f,
-				},
-				{
-					scale.y * (c3 * s1 * s2 - c1 * s3),
-					scale.y * (c2 * c3),
-					scale.y * (c1 * c3 * s2 + s1 * s3),
-					0.0f,
-				},
-				{
-					scale.z * (c2 * s1),
-					scale.z * (-s2),
-					scale.z * (c1 * c2),
-					0.0f,
-				},
-				{translation.x, translation.y, translation.z, 1.0f} };
+			return translationMatrix * rotationMatrix * scaleMatrix;
+		}
+
+		glm::vec3 GetForwardVector() const
+		{
+			glm::mat4 rotationMatrix =
+				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
+			return glm::vec3(glm::vec4(0.f, 1.f, 0.f, 1.f) * rotationMatrix);
+		};
+
+		glm::vec3 GetRightVector() const
+		{
+			glm::mat4 rotationMatrix =
+				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
+			return glm::vec3(glm::vec4(1.f, 0.f, 0.f, 1.f) * rotationMatrix);
 		}
 	};
 

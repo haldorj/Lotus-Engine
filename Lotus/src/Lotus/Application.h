@@ -18,8 +18,8 @@ namespace Lotus {
         Application(const Application&) = delete; // delete copy constructor
         Application operator=(const Application&) = delete; // delete copy operator
 
-        static constexpr uint32_t WIDTH = 800;
-        static constexpr uint32_t HEIGHT = 600;
+        static constexpr uint32_t WIDTH = 1280;
+        static constexpr uint32_t HEIGHT = 720;
 
         void Run();
 

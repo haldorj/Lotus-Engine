@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Renderer/SimpleRenderSystem.h"
 #include "Camera/Camera.h"
+#include "Input/KeyboardMovementController.h"
 
 #include "Lotus/Log.h"
 
@@ -28,15 +29,33 @@ namespace Lotus {
     void Application::Run()
     {
         Camera camera{};
+        camera.SetPosition(glm::vec3{ 0.0f, -2.0f, 1.0f });
+        camera.SetRotation(glm::vec3{ 0.0f, 0.0f, 0.0f });
         
-        camera.SetViewTarget(glm::vec3{ 0.0f, -3.0f, 3.0f }, glm::vec3{ 0.0f, 2.5f, 0.0f }, glm::vec3{0.0, 0.0, 1.0});
+        auto viewerObject = GameObject::CreateGameObject();
+        viewerObject.transform.translation = camera.GetPosition();
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+
         SimpleRenderSystem simpleRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass() };
         while (!m_Window.Closed())
         {
             m_Window.Update();
 
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float>(newTime - currentTime).count();
+            currentTime = newTime;
+            
+            
+            cameraController.MoveInPlaneXY(m_Window.GetWindow(), frameTime, viewerObject);
+            camera.LookAt(
+                viewerObject.transform.translation,
+                viewerObject.transform.translation + viewerObject.transform.GetForwardVector(),
+                glm::vec3{ 0.0f, 0.0f, 1.0f }
+                );
+
             float aspect = m_Renderer.GetAspectRatio();
-            //camera.SetOrthographicProjection(-aspect, aspect, -1, 1, 1.0f - 1, 5);
             camera.SetPerspectiveProjection(glm::radians(60.f), aspect, .1f, 50.f);
 
             if (auto commandBuffer = m_Renderer.BeginFrame())
@@ -135,18 +154,18 @@ namespace Lotus {
     {
         std::shared_ptr<Model> model = createCubeModel(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
        
-        auto cube = GameObject::CreateGameObject();
-        cube.model = model;
-        cube.transform.translation = { 0.0f, 2.5f, 0.0f };
-        cube.transform.scale = { 1.5f, 1.5f, 1.5f };
-        m_GameObjects.push_back(std::move(cube));
+        // auto cube = GameObject::CreateGameObject();
+        // cube.model = model;
+        // cube.transform.translation = { 0.0f, 0.0f, 0.0f };
+        // cube.transform.scale = { .5f, .5f, .5f };
+        // m_GameObjects.push_back(std::move(cube));
 
-        //std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-        //auto xyz = GameObject::CreateGameObject();
-        //xyz.model = XYZmodel;
-        //xyz.transform.translation = { 0.0f, 0.0f, 0.5f };
-        //xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
-        //m_GameObjects.push_back(std::move(xyz));
+        std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
+        auto xyz = GameObject::CreateGameObject();
+        xyz.model = XYZmodel;
+        xyz.transform.translation = { 0.0f, 0.0f, 0.0f };
+        xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
+        m_GameObjects.push_back(std::move(xyz));
     }
 
 }

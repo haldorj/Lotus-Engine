@@ -74,12 +74,12 @@ namespace Lotus
 
         for (auto& obj : gameObjects)
         {
-            obj.transform.rotation.z = glm::mod(obj.transform.rotation.z + 0.0001f, glm::two_pi<float>());
-            obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.00005f, glm::two_pi<float>());
+            //obj.transform.rotation.z = glm::mod(obj.transform.rotation.z + 0.0001f, glm::two_pi<float>());
+            //obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.0005f, glm::two_pi<float>());
 
             SimplePushConstantData push{};
             push.color = obj.color;
-            push.transform = projectionView * obj.transform.mat4();
+            push.transform = projectionView * obj.transform.GetTransform();
 
             vkCmdPushConstants(
                 commandBuffer,

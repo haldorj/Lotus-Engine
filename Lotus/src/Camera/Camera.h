@@ -10,18 +10,31 @@ namespace Lotus
 	class Camera
 	{
 	public:
-		void SetOrthographicProjection(float left, float right, float top, float bottom, float near, float far);
+		Camera();
+		void SetOrthographicProjection(float left, float right, float top, float bottom);
 		void SetPerspectiveProjection(float fovy, float aspect, float near, float far);
 
-		void SetViewDirection(const glm::vec3 position, const glm::vec3 direction, const glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
-		void SetViewTarget(const glm::vec3 position, const glm::vec3 target, const glm::vec3 up = glm::vec3{ 0.f, -1.f, 0.f });
-		void SetViewYXZ(const glm::vec3 position, const glm::vec3 rotation);
+		void LookAt(glm::vec3 eye, glm::vec3& target, glm::vec3& up);
+		glm::vec3 GetViewDirection();
+		
+		const glm::vec3& GetPosition() const { return m_Position; }
+		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
+		
+		const glm::vec3 GetRotation() const { return m_Rotation; }
+		void SetRotation(glm::vec3 rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 	private:
-		glm::mat4 m_ProjectionMatrix{ 1.f };
-		glm::mat4 m_ViewMatrix{ 1.f };
+		void RecalculateViewMatrix();
+	private:
+		glm::mat4 m_ProjectionMatrix = {};
+		glm::mat4 m_ViewMatrix = {};
+		glm::mat4 m_ViewProjectionMatrix = {};
+		
+		glm::vec3 m_Position = {};
+		glm::vec3 m_Rotation = {};
 	};
 
 }
