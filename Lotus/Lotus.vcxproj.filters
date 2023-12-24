@@ -4,6 +4,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Camera">
+      <UniqueIdentifier>{054BA008-F102-E255-5A0A-BBB146E17C46}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Lotus">
       <UniqueIdentifier>{D32F5AB3-3F9A-0E2A-88D8-BFCFF481EC7E}</UniqueIdentifier>
     </Filter>
@@ -36,6 +39,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera\Camera.h">
+      <Filter>src\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="src\Lotus.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -1320,9 +1326,11 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Camera\Camera.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera\Camera.cpp">
+      <Filter>src\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="src\Lotus\Application.cpp">
       <Filter>src\Lotus</Filter>
     </ClCompile>
@@ -1341,6 +1349,9 @@
     <ClCompile Include="src\Renderer\Pipeline.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Renderer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\SimpleRenderSystem.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
@@ -1353,7 +1364,5 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\Camera\Camera.cpp" />
   </ItemGroup>
 </Project>

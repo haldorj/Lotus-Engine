@@ -28,15 +28,16 @@ namespace Lotus {
     void Application::Run()
     {
         Camera camera{};
-
+        
+        camera.SetViewTarget(glm::vec3{ 0.0f, -3.0f, 3.0f }, glm::vec3{ 0.0f, 2.5f, 0.0f }, glm::vec3{0.0, 0.0, 1.0});
         SimpleRenderSystem simpleRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass() };
         while (!m_Window.Closed())
         {
             m_Window.Update();
 
             float aspect = m_Renderer.GetAspectRatio();
-            //camera.SetOrthographicProjection(-aspect, aspect, -1, 1, -1, 5);
-            camera.SetPerspectiveProjection(glm::radians(60.f), aspect, .1f, 10.f);
+            //camera.SetOrthographicProjection(-aspect, aspect, -1, 1, 1.0f - 1, 5);
+            camera.SetPerspectiveProjection(glm::radians(60.f), aspect, .1f, 50.f);
 
             if (auto commandBuffer = m_Renderer.BeginFrame())
             {
@@ -132,21 +133,20 @@ namespace Lotus {
 
     void Application::LoadGameObjects()
     {
-        std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-        //std::shared_ptr<Model> model = createCubeModel(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
+        std::shared_ptr<Model> model = createCubeModel(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
+       
+        auto cube = GameObject::CreateGameObject();
+        cube.model = model;
+        cube.transform.translation = { 0.0f, 2.5f, 0.0f };
+        cube.transform.scale = { 1.5f, 1.5f, 1.5f };
+        m_GameObjects.push_back(std::move(cube));
 
-        //auto cube = GameObject::CreateGameObject();
-        //cube.model = model;
-        //cube.transform.translation = { 0.0f, 0.0f, 2.5f };
-        //cube.transform.scale = { 0.5f, 0.5f, 0.5f };
-
-        auto xyz = GameObject::CreateGameObject();
-        xyz.model = XYZmodel;
-        xyz.transform.translation = { 0.0f, 0.0f, 2.5f };
-        xyz.transform.scale = { 0.75f, 0.75f, 0.75f };
-
-        //m_GameObjects.push_back(std::move(cube));
-        m_GameObjects.push_back(std::move(xyz));
+        //std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
+        //auto xyz = GameObject::CreateGameObject();
+        //xyz.model = XYZmodel;
+        //xyz.transform.translation = { 0.0f, 0.0f, 0.5f };
+        //xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
+        //m_GameObjects.push_back(std::move(xyz));
     }
 
 }

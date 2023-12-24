@@ -70,6 +70,8 @@ namespace Lotus
     {
         m_Pipeline->Bind(commandBuffer);
 
+        auto projectionView = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+
         for (auto& obj : gameObjects)
         {
             obj.transform.rotation.z = glm::mod(obj.transform.rotation.z + 0.0001f, glm::two_pi<float>());
@@ -77,7 +79,7 @@ namespace Lotus
 
             SimplePushConstantData push{};
             push.color = obj.color;
-            push.transform = camera.GetProjectionMatrix() * obj.transform.mat4();
+            push.transform = projectionView * obj.transform.mat4();
 
             vkCmdPushConstants(
                 commandBuffer,
@@ -87,6 +89,7 @@ namespace Lotus
                 sizeof(SimplePushConstantData),
                 &push
             );
+
             obj.model->Bind(commandBuffer);
             obj.model->Draw(commandBuffer);
         }

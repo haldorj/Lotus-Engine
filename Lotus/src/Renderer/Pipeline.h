@@ -49,7 +49,8 @@ namespace Lotus
         void CreateGraphicsPipeline(
             const std::string& vertFilepath,
             const std::string& fragFilepath,
-            const PipelineConfigInfo& configInfo);
+            const PipelineConfigInfo& configInfo
+        );
 
         void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
