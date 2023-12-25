@@ -48,6 +48,9 @@
     <ClInclude Include="src\Input\KeyboardMovementController.h">
       <Filter>src\Input</Filter>
     </ClInclude>
+    <ClInclude Include="src\Input\MouseMovementController.h">
+      <Filter>src\Input</Filter>
+    </ClInclude>
     <ClInclude Include="src\Lotus.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -1332,13 +1335,15 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Input\MouseMovementController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>src\Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\Input\KeyboardMovementController.cpp">
+      <Filter>src\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\MouseMovementController.cpp">
       <Filter>src\Input</Filter>
     </ClCompile>
     <ClCompile Include="src\Lotus\Application.cpp">
@@ -1374,6 +1379,5 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Input\MouseMovementController.cpp" />
   </ItemGroup>
 </Project>

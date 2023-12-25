@@ -7,34 +7,47 @@
 
 namespace Lotus {
 
-    class Model
-    {
-    public:
-        struct Vertex
-        {
-            glm::vec3 position;
-            glm::vec3 color;
+	class Model
+	{
+	public:
+		struct Vertex
+		{
+			glm::vec3 position;
+			glm::vec3 color;
 
-            static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();
-            static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
-        };
+			static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();
+			static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
+		};
 
-        Model(Device& device, const std::vector<Vertex>& vertices);
-        ~Model();
+		struct Builder
+		{
+			std::vector<Vertex> vertices;
+			std::vector<uint32_t> indices;
+		};
 
-        Model(const Model&) = delete; // delete copy constructor
-        Model operator=(const Model&) = delete; // delete copy operator
+		Model(Device& device, const Builder& builder);
+		~Model();
 
-        void Bind(VkCommandBuffer commandBuffer);
-        void Draw(VkCommandBuffer commandBuffer);
-    private:
-        void CreateVertexBuffers(const std::vector<Vertex>& vertices);
+		Model(const Model&) = delete; // delete copy constructor
+		Model operator=(const Model&) = delete; // delete copy operator
 
-    private:
-        Device& m_Device;
-        VkBuffer m_VertexBuffer;
-        VkDeviceMemory m_VertexBufferMemory;
-        uint32_t m_VertexCount;
-    };
+		void Bind(VkCommandBuffer commandBuffer) const;
+		void Draw(VkCommandBuffer commandBuffer) const;
+	private:
+		void CreateVertexBuffers(const std::vector<Vertex>& vertices);
+		void CreateIndexBuffers(const std::vector<uint32_t>& indices);
+
+	private:
+		Device& m_Device;
+
+		VkBuffer m_VertexBuffer;
+		VkDeviceMemory m_VertexBufferMemory;
+		uint32_t m_VertexCount;
+
+		bool m_HasIndexBuffer;
+		VkBuffer m_IndexBuffer;
+		VkDeviceMemory m_IndexBufferMemory;
+		uint32_t m_IndexCount;
+	};
 
 }
