@@ -10,6 +10,7 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include <Input/MouseMovementController.h>
 
 namespace Lotus {
 
@@ -29,12 +30,11 @@ namespace Lotus {
     void Application::Run()
     {
         Camera camera{};
-        camera.SetPosition(glm::vec3{ 0.0f, -2.0f, 1.0f });
-        camera.SetRotation(glm::vec3{ 0.0f, 0.0f, 0.0f });
-        
-        auto viewerObject = GameObject::CreateGameObject();
-        viewerObject.transform.translation = camera.GetPosition();
+        auto cameraObject = GameObject::CreateGameObject();
+        cameraObject.transform.position = glm::vec3{ 0.0f, -2.0f, 1.0f };
+        cameraObject.transform.rotation = glm::vec3{ 0.4f, 0.0f, 0.0f };
         KeyboardMovementController cameraController{};
+        //MouseMovementController mouseController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -47,11 +47,12 @@ namespace Lotus {
             float frameTime = std::chrono::duration<float>(newTime - currentTime).count();
             currentTime = newTime;
             
-            
-            cameraController.MoveInPlaneXY(m_Window.GetWindow(), frameTime, viewerObject);
+            cameraController.MoveInPlaneXY(m_Window.GetWindow(), frameTime, cameraObject);
+            //mouseController.UpdateMouse(m_Window.GetWindow(), frameTime, cameraObject);
+
             camera.LookAt(
-                viewerObject.transform.translation,
-                viewerObject.transform.translation + viewerObject.transform.GetForwardVector(),
+                cameraObject.transform.position,
+                cameraObject.transform.position + cameraObject.transform.GetForwardVector(),
                 glm::vec3{ 0.0f, 0.0f, 1.0f }
                 );
 
@@ -153,19 +154,18 @@ namespace Lotus {
     void Application::LoadGameObjects()
     {
         std::shared_ptr<Model> model = createCubeModel(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-       
-        // auto cube = GameObject::CreateGameObject();
-        // cube.model = model;
-        // cube.transform.translation = { 0.0f, 0.0f, 0.0f };
-        // cube.transform.scale = { .5f, .5f, .5f };
-        // m_GameObjects.push_back(std::move(cube));
+         auto cube = GameObject::CreateGameObject();
+         cube.model = model;
+         cube.transform.position = { 0.0f, 0.0f, 0.0f };
+         cube.transform.scale = { .5f, .5f, .5f };
+         m_GameObjects.push_back(std::move(cube));
 
-        std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-        auto xyz = GameObject::CreateGameObject();
-        xyz.model = XYZmodel;
-        xyz.transform.translation = { 0.0f, 0.0f, 0.0f };
-        xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
-        m_GameObjects.push_back(std::move(xyz));
+        //std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
+        //auto xyz = GameObject::CreateGameObject();
+        //xyz.model = XYZmodel;
+        //xyz.transform.position = { 0.0f, 0.0f, 0.0f };
+        //xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
+        //m_GameObjects.push_back(std::move(xyz));
     }
 
 }

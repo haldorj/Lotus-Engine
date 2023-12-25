@@ -5,16 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb69790e-cd79-4354-8870-d726d7fa1081" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lotus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Lotus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/Lotus.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/Lotus.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/Lotus.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/Lotus.vcxproj.filters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Camera/Camera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Camera/Camera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Camera/Camera.h" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Camera/Camera.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Lotus/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Lotus/Application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Lotus/Application.h" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Lotus/Application.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Lotus/GameObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Lotus/GameObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/Pipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Renderer/Pipeline.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lotus/src/Renderer/SimpleRenderSystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/src/Renderer/SimpleRenderSystem.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/vendor/GLFW" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/vendor/GLFW" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.log" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.tlog/CL.command.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/Lotus/vendor/GLFW/bin-int/Debug-windows-x86_64/GLFW/GLFW.tlog/CL.command.1.tlog" afterDir="false" />
@@ -140,7 +130,7 @@
       <workItem from="1703315962445" duration="711000" />
       <workItem from="1703329117214" duration="233000" />
       <workItem from="1703329376800" duration="2457000" />
-      <workItem from="1703413110029" duration="13282000" />
+      <workItem from="1703413110029" duration="13581000" />
     </task>
     <servers />
   </component>

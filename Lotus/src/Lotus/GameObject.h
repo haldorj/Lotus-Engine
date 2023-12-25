@@ -7,17 +7,15 @@ namespace Lotus
 {
 	struct TransformComponent
 	{
-		glm::vec3 translation{};
+	public:
+		glm::vec3 position{};
 		glm::vec3 scale{ 1.f, 1.f, 1.f };
 		glm::vec3 rotation{};
-		
+
 		glm::mat4 GetTransform() const
 		{
-			glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), translation);
-			glm::mat4 rotationMatrix =
-				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
+			glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), position);
+			glm::mat4 rotationMatrix = GetRotationMatrix();
 			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), scale);
 
 			return translationMatrix * rotationMatrix * scaleMatrix;
@@ -25,20 +23,27 @@ namespace Lotus
 
 		glm::vec3 GetForwardVector() const
 		{
-			glm::mat4 rotationMatrix =
-				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
-			return glm::vec3(glm::vec4(0.f, 1.f, 0.f, 1.f) * rotationMatrix);
+			return glm::vec3(glm::vec4(0.f, 1.f, 0.f, 1.f) * GetRotationMatrix());
 		};
 
 		glm::vec3 GetRightVector() const
+		{
+			return glm::vec3(glm::vec4(1.f, 0.f, 0.f, 1.f) * GetRotationMatrix());
+		};
+
+		glm::vec3 GetUpVector() const
+		{
+			return glm::vec3(glm::vec4(0.f, 0.f, 1.f, 1.f) * GetRotationMatrix());
+		};
+
+	private:
+		glm::mat4 GetRotationMatrix() const
 		{
 			glm::mat4 rotationMatrix =
 				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
 				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
 				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
-			return glm::vec3(glm::vec4(1.f, 0.f, 0.f, 1.f) * rotationMatrix);
+			return rotationMatrix;
 		}
 	};
 

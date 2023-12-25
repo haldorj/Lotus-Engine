@@ -143,8 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Input\KeyboardMovementController.h" />
     <ClInclude Include="src\Camera\Camera.h" />
+    <ClInclude Include="src\Input\KeyboardMovementController.h" />
+    <ClInclude Include="src\Input\MouseMovementController.h" />
     <ClInclude Include="src\Lotus.h" />
     <ClInclude Include="src\Lotus\Application.h" />
     <ClInclude Include="src\Lotus\Core.h" />
@@ -575,8 +576,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Input\KeyboardMovementController.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
+    <ClCompile Include="src\Input\KeyboardMovementController.cpp" />
+    <ClCompile Include="src\Input\MouseMovementController.cpp" />
     <ClCompile Include="src\Lotus\Application.cpp" />
     <ClCompile Include="src\Lotus\GameObject.cpp" />
     <ClCompile Include="src\Lotus\Log.cpp" />

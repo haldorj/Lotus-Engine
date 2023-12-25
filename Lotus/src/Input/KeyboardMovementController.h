@@ -22,7 +22,6 @@ namespace  Lotus
             int lookDown = GLFW_KEY_DOWN;
         };
 
-        void MoveInPlaneXZ(GLFWwindow* window, float deltaTime, GameObject& gameObject);
         void MoveInPlaneXY(GLFWwindow* window, float deltaTime, GameObject& gameObject);
 
         KeyMappings m_KeyMappings;

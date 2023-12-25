@@ -15,7 +15,6 @@ namespace Lotus
 		void SetPerspectiveProjection(float fovy, float aspect, float near, float far);
 
 		void LookAt(glm::vec3 eye, glm::vec3& target, glm::vec3& up);
-		glm::vec3 GetViewDirection();
 		
 		const glm::vec3& GetPosition() const { return m_Position; }
 		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }

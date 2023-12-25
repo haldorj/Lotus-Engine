@@ -7,6 +7,9 @@
     <Filter Include="src\Camera">
       <UniqueIdentifier>{054BA008-F102-E255-5A0A-BBB146E17C46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Input">
+      <UniqueIdentifier>{EC4823B3-58B3-D729-A1F1-88CF0D9BB57E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Lotus">
       <UniqueIdentifier>{D32F5AB3-3F9A-0E2A-88D8-BFCFF481EC7E}</UniqueIdentifier>
     </Filter>
@@ -41,6 +44,9 @@
   <ItemGroup>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\KeyboardMovementController.h">
+      <Filter>src\Input</Filter>
     </ClInclude>
     <ClInclude Include="src\Lotus.h">
       <Filter>src</Filter>
@@ -1326,11 +1332,14 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Input\KeyboardMovementController.h" />
+    <ClInclude Include="src\Input\MouseMovementController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>src\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\KeyboardMovementController.cpp">
+      <Filter>src\Input</Filter>
     </ClCompile>
     <ClCompile Include="src\Lotus\Application.cpp">
       <Filter>src\Lotus</Filter>
@@ -1365,6 +1374,6 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Input\KeyboardMovementController.cpp" />
+    <ClCompile Include="src\Input\MouseMovementController.cpp" />
   </ItemGroup>
 </Project>
