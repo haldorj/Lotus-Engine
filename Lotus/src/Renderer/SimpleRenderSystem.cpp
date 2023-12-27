@@ -12,7 +12,8 @@ namespace Lotus
     struct SimplePushConstantData
     {
         glm::mat4 transform{ 1.0f };
-        alignas(16) glm::vec3 color;
+        glm::mat4 normalMatrix{ 1.0f };
+        //alignas(16) glm::vec3 color;
     };
 
     SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass)
@@ -88,8 +89,9 @@ namespace Lotus
         for (auto& obj : gameObjects)
         {
             SimplePushConstantData push{};
-            push.color = obj.color;
-            push.transform = projectionView * obj.transform.GetTransform();
+            auto modelMatrix = obj.transform.GetTransform();
+            push.transform = projectionView * modelMatrix;
+            push.normalMatrix = obj.transform.GetNormalMatrix();
 
             vkCmdPushConstants(
                 commandBuffer,

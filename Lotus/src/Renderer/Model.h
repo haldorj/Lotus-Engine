@@ -15,14 +15,14 @@ namespace Lotus {
 			glm::vec3 position{};
 			glm::vec3 color{};
 			glm::vec3 normal{};
-			glm::vec2 uv{};
+			glm::vec2 texCoord{};
 
 			static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions();
 			static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
 
 			bool operator==(const Vertex& other) const
 			{
-				return position == other.position && color == other.color && normal == other.normal && uv == other.uv;
+				return position == other.position && color == other.color && normal == other.normal && texCoord == other.texCoord;
 			}
 		};
 

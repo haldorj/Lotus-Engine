@@ -22,6 +22,11 @@ namespace Lotus
 
 			return translationMatrix * rotationMatrix * scaleMatrix;
 		}
+		
+		glm::mat3 GetNormalMatrix() const
+		{
+			return glm::mat3(glm::transpose(glm::inverse(GetTransform())));
+		}
 
 		glm::vec3 GetForwardVector() const
 		{
