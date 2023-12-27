@@ -3,6 +3,7 @@
 #include "Renderer/SimpleRenderSystem.h"
 #include "Camera/Camera.h"
 #include "Input/KeyboardMovementController.h"
+#include "Input/MouseMovementController.h"
 
 #include "Lotus/Log.h"
 
@@ -10,7 +11,8 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include <Input/MouseMovementController.h>
+
+#include "tiny_obj_loader.h"
 
 namespace Lotus {
 
@@ -173,6 +175,17 @@ namespace Lotus {
         xyz.transform.position = { 0.0f, 0.0f, 0.0f };
         xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
         m_LineListGameObjects.push_back(std::move(xyz));
+
+        const std::shared_ptr<Model> vikingRoom =
+            Model::CreateModelFromFile(m_Device, "../Assets/Models/viking_room.obj");
+
+        auto gameObject = GameObject::CreateGameObject();
+        gameObject.model = vikingRoom;
+        gameObject.transform.position = { 2.5f, 2.5f, 0.0f };
+        
+        gameObject.transform.rotation = glm::vec3{ 0.0f, 0.0f, -90.f };
+        //gameObject.transform.scale = { 2.5f, 2.5f, 2.5f };
+        m_GameObjects.push_back(std::move(gameObject));
     }
 
 }

@@ -4,6 +4,31 @@
 #include <cassert>
 #include <cstring>
 
+#include "Utils/Utils.h"
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
+namespace std
+{
+    template<>
+    struct hash<Lotus::Model::Vertex>
+    {
+        size_t operator()(const Lotus::Model::Vertex& vertex) const
+        {
+            size_t seed = 0;
+            Lotus::hash_combine(seed, vertex.position.x, vertex.position.y, vertex.position.z,
+                vertex.color.r, vertex.color.g, vertex.color.b,
+                vertex.normal.x, vertex.normal.y, vertex.normal.z,
+                vertex.uv.x, vertex.uv.y);
+            return seed;
+        }
+    };
+}
+
+
 namespace Lotus {
 
     Model::Model(Device& device, const Builder& builder)
@@ -22,6 +47,16 @@ namespace Lotus {
             vkDestroyBuffer(m_Device.GetDevice(), m_IndexBuffer, nullptr);
             vkFreeMemory(m_Device.GetDevice(), m_IndexBufferMemory, nullptr);
         }
+    }
+
+    std::unique_ptr<Model> Model::CreateModelFromFile(Device& device, const std::string& filepath)
+    {
+        Builder builder{};
+        builder.LoadModel(filepath);
+        std::cout << "Model loaded from file: " << filepath << "\n"
+            << "Model has " << builder.vertices.size() << " vertices" << std::endl;
+
+        return std::make_unique<Model>(device, builder);
     }
 
     void Model::Bind(VkCommandBuffer commandBuffer) const
@@ -131,6 +166,74 @@ namespace Lotus {
         attributeDescriptions[1].offset = offsetof(Vertex, color);
 
         return attributeDescriptions;
+    }
+
+    void Model::Builder::LoadModel(const std::string& filepath)
+    {
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials; // we won't use materials for now
+        std::string warn, error;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &error, filepath.c_str()))
+        {
+            throw std::runtime_error(warn + error);
+        }
+
+        vertices.clear();
+        indices.clear();
+
+        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+        for (const auto& shape : shapes)
+        {
+            for (const auto& index : shape.mesh.indices)
+            {
+                Vertex vertex{};
+                if (index.vertex_index >= 0)
+                {
+                    vertex.position = {
+                        attrib.vertices[3 * index.vertex_index + 0],
+                        attrib.vertices[3 * index.vertex_index + 1],
+                        attrib.vertices[3 * index.vertex_index + 2]
+                    };
+                    auto colorIndex = 3 * index.vertex_index + 2;
+                    if (colorIndex < attrib.colors.size())
+                    {
+                        vertex.color = {
+                            attrib.colors[colorIndex - 2],
+                            attrib.colors[colorIndex - 1],
+                            attrib.colors[colorIndex]
+                        };
+                    }
+                    else
+                    {
+                        vertex.color = { 1.f, 1.f, 1.f };
+                    }
+                }
+                if (index.normal_index >= 0)
+                {
+                    vertex.normal = {
+                        attrib.normals[3 * index.normal_index + 0],
+                        attrib.normals[3 * index.normal_index + 1],
+                        attrib.normals[3 * index.normal_index + 2]
+                    };
+                }
+                if (index.texcoord_index >= 0)
+                {
+                    vertex.uv = {
+                        attrib.texcoords[2 * index.texcoord_index + 0],
+                        attrib.texcoords[2 * index.texcoord_index + 1]
+                    };
+                }
+
+                if (uniqueVertices.count(vertex) == 0)
+                {
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                    vertices.push_back(vertex);
+                }
+                indices.push_back(uniqueVertices[vertex]);
+            }
+        }
     }
 
 }

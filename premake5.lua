@@ -17,6 +17,7 @@ IncludeDir["GLFW"] = "Lotus/vendor/GLFW/include"
 IncludeDir["ImGui"] = "Lotus/vendor/imgui"
 IncludeDir["glm"] = "Lotus/vendor/glm"
 IncludeDir["Vulkan"] = "C:/VulkanSDK/1.3.268.0/Include"
+IncludeDir["tinyobjloader"] = "Lotus/vendor/tinyobjloader"
 
 include "Lotus/vendor/GLFW"
 include "Lotus/vendor/imgui"
@@ -54,7 +55,8 @@ project "Lotus"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.Vulkan}" -- Include Vulkan directory
+        "%{IncludeDir.Vulkan}",
+        "%{IncludeDir.tinyobjloader}"
     }
 
     links 
@@ -62,7 +64,7 @@ project "Lotus"
         "GLFW",
         "ImGui",
         "opengl32.lib",
-        "C:/VulkanSDK/1.3.268.0/Lib/vulkan-1.lib" -- Link against Vulkan library
+        "C:/VulkanSDK/1.3.268.0/Lib/vulkan-1.lib"
     }
 
     filter "system:windows"
@@ -113,7 +115,8 @@ project "Sandbox"
         "Lotus/vendor",
         "%{IncludeDir.glm}",
         "%{IncludeDir.Vulkan}",
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.tinyobjloader}",
     }
 
     links

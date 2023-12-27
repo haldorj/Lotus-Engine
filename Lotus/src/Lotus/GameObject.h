@@ -3,6 +3,8 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "Renderer/Model.h"
 
+#define GLM_FORCE_RADIANS
+
 namespace Lotus
 {
 	struct TransformComponent
@@ -40,9 +42,9 @@ namespace Lotus
 		glm::mat4 GetRotationMatrix() const
 		{
 			glm::mat4 rotationMatrix =
-				glm::rotate(glm::mat4(1.f), rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), rotation.z, glm::vec3(0.f, 0.f, 1.f));
+				glm::rotate(glm::mat4(1.f), glm::radians(rotation.x), glm::vec3(1.f, 0.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), glm::radians(rotation.y), glm::vec3(0.f, 1.f, 0.f)) *
+				glm::rotate(glm::mat4(1.f), glm::radians(rotation.z), glm::vec3(0.f, 0.f, 1.f));
 			return rotationMatrix;
 		}
 	};
