@@ -16,7 +16,6 @@ namespace Lotus {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
-
     Application::Application()
     {
         LoadGameObjects();
@@ -39,6 +38,7 @@ namespace Lotus {
         auto currentTime = std::chrono::high_resolution_clock::now();
 
         SimpleRenderSystem simpleRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass() };
+        SimpleRenderSystem LineListRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST };
         while (!m_Window.Closed())
         {
             m_Window.Update();
@@ -63,6 +63,7 @@ namespace Lotus {
             {
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.RenderGameObjects(commandBuffer, m_GameObjects, camera);
+                LineListRenderSystem.RenderGameObjects(commandBuffer, m_LineListGameObjects, camera);
                 m_Renderer.EndSwapChainRenderPass(commandBuffer);
                 m_Renderer.EndFrame();
             }
@@ -86,25 +87,25 @@ namespace Lotus {
             {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
             {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
 
-            // top face (orange, remember y axis points down)
+            // top face (orange)
             {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
             {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
             {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
             {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
 
-            // bottom face (red)
+            // back face (red)
             {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
             {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
             {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
             {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
 
-            // nose face (blue)
+            // top face (blue)
             {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
             {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
             {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
             {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
 
-            // tail face (green)
+            // bottom face (green)
             {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
             {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
             {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
@@ -116,8 +117,12 @@ namespace Lotus {
         }
 
         modelBuilder.indices = {
-            0, 1, 2, 0, 3, 1, 4, 5, 6, 4, 7, 5, 8, 9, 10, 8, 11, 9,
-            12, 13, 14, 12, 15, 13, 16, 17, 18, 16, 19, 17, 20, 21, 22, 20, 23, 21
+            0, 1, 2, 0, 3, 1,
+            4, 5, 6, 4, 7, 5, 
+            8, 9, 10, 8, 11, 9,
+            12, 13, 14, 12, 15, 13, 
+            16, 17, 18, 16, 19, 17, 
+            20, 21, 22, 20, 23, 21
         };
 
         return std::make_unique<Model>(device, modelBuilder);
@@ -158,7 +163,7 @@ namespace Lotus {
         std::shared_ptr<Model> model = createCubeModel(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
         auto cube = GameObject::CreateGameObject();
         cube.model = model;
-        cube.transform.position = { 0.0f, 0.0f, 0.0f };
+        cube.transform.position = { 1.f, 1.f, 0.25f };
         cube.transform.scale = { .5f, .5f, .5f };
         m_GameObjects.push_back(std::move(cube));
          
@@ -167,7 +172,7 @@ namespace Lotus {
         xyz.model = XYZmodel;
         xyz.transform.position = { 0.0f, 0.0f, 0.0f };
         xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
-        m_GameObjects.push_back(std::move(xyz));
+        m_LineListGameObjects.push_back(std::move(xyz));
     }
 
 }

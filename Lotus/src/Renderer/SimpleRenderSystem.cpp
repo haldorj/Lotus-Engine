@@ -18,9 +18,18 @@ namespace Lotus
     SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass)
         : m_Device{ device }
     {
+        // default params
         CreatePipelineLayout();
         CreatePipeline(renderPass);
     }
+
+    Lotus::SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkPrimitiveTopology topology)
+		: m_Device{ device }
+    {
+        CreatePipelineLayout();
+        CreatePipeline(renderPass, topology);
+    }
+
 
     SimpleRenderSystem::~SimpleRenderSystem()
     {
@@ -48,7 +57,8 @@ namespace Lotus
         }
     }
 
-    void SimpleRenderSystem::CreatePipeline(VkRenderPass renderPass)
+    void SimpleRenderSystem::CreatePipeline(VkRenderPass renderPass, 
+        VkPrimitiveTopology topology)
     {
         assert(m_PipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
 
@@ -56,6 +66,9 @@ namespace Lotus
         Pipeline::DefaultPipelineConfigInfo(
             pipelineConfig
         );
+
+        pipelineConfig.inputAssemblyInfo.topology = topology;
+
         pipelineConfig.renderPass = renderPass;
         pipelineConfig.pipelineLayout = m_PipelineLayout;
         m_Pipeline = std::make_unique<Pipeline>(
@@ -74,9 +87,6 @@ namespace Lotus
 
         for (auto& obj : gameObjects)
         {
-            //obj.transform.rotation.z = glm::mod(obj.transform.rotation.z + 0.0001f, glm::two_pi<float>());
-            //obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.0005f, glm::two_pi<float>());
-
             SimplePushConstantData push{};
             push.color = obj.color;
             push.transform = projectionView * obj.transform.GetTransform();

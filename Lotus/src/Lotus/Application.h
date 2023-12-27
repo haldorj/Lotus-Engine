@@ -32,6 +32,7 @@ namespace Lotus {
         Renderer m_Renderer{ m_Window, m_Device };
 
         std::vector<GameObject> m_GameObjects;
+        std::vector<GameObject> m_LineListGameObjects;
     };
 
     // To be defined in Client
