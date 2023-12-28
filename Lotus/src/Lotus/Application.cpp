@@ -39,15 +39,16 @@ namespace Lotus {
 
     void Application::Run()
     {
-        Buffer globalUboBuffer{
-            m_Device,
-            sizeof(GlobalUbo),
-            SwapChain::MAX_FRAMES_IN_FLIGHT,
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            m_Device.properties.limits.minUniformBufferOffsetAlignment
-        };
-        globalUboBuffer.Map();
+        std::vector<std::unique_ptr<Buffer>> uboBuffers(SwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < uboBuffers.size(); i++) {
+            uboBuffers[i] = std::make_unique<Buffer>(
+                m_Device,
+                sizeof(GlobalUbo),
+                1,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+            uboBuffers[i]->Map();
+        }
 
         Camera camera{};
         auto cameraObject = GameObject::CreateGameObject();
@@ -87,8 +88,8 @@ namespace Lotus {
                 // Update
                 GlobalUbo ubo{};
                 ubo.projectionView = camera.GetProjectionMatrix() * camera.GetViewMatrix();
-                globalUboBuffer.WriteToIndex(&ubo, frameIndex);
-                globalUboBuffer.Flush();
+                uboBuffers[frameIndex]->WriteToBuffer(&ubo);
+                uboBuffers[frameIndex]->Flush();
                 // Render
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.RenderGameObjects(frameInfo, m_GameObjects);
