@@ -14,8 +14,8 @@ namespace Lotus
     class SimpleRenderSystem
     {
     public:
-        SimpleRenderSystem(Device& device, VkRenderPass renderPass);
-        SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkPrimitiveTopology topology);
+        SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
+        SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout, VkPrimitiveTopology topology);
         ~SimpleRenderSystem();
 
         SimpleRenderSystem(const SimpleRenderSystem&) = delete; // delete copy constructor
@@ -23,7 +23,7 @@ namespace Lotus
 
         void RenderGameObjects(FrameInfo& frameInfo, std::vector<GameObject>& gameObjects);
     private:
-        void CreatePipelineLayout();
+        void CreatePipelineLayout(VkDescriptorSetLayout globalDescriptorSet);
         void CreatePipeline(VkRenderPass renderPass, VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 
     private:

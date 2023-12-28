@@ -11,23 +11,24 @@ namespace Lotus
 {
     struct SimplePushConstantData
     {
-        glm::mat4 transform{ 1.0f };
+        glm::mat4 modelMatrix{ 1.0f };
         glm::mat4 normalMatrix{ 1.0f };
         //alignas(16) glm::vec3 color;
     };
 
-    SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass)
+    SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
         : m_Device{ device }
     {
         // default params
-        CreatePipelineLayout();
+        CreatePipelineLayout(globalSetLayout);
         CreatePipeline(renderPass);
     }
 
-    Lotus::SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkPrimitiveTopology topology)
+    Lotus::SimpleRenderSystem::SimpleRenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout, 
+        VkPrimitiveTopology topology)
 		: m_Device{ device }
     {
-        CreatePipelineLayout();
+        CreatePipelineLayout(globalSetLayout);
         CreatePipeline(renderPass, topology);
     }
 
@@ -38,17 +39,19 @@ namespace Lotus
         vkDestroyPipelineLayout(m_Device.GetDevice(), m_PipelineLayout, nullptr);
     }
 
-    void SimpleRenderSystem::CreatePipelineLayout()
+    void SimpleRenderSystem::CreatePipelineLayout(VkDescriptorSetLayout globalSetLayout)
     {
         VkPushConstantRange pushConstantRange{};
         pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
         pushConstantRange.offset = 0;
         pushConstantRange.size = sizeof(SimplePushConstantData);
 
+        std::vector<VkDescriptorSetLayout> descriptorSetLayouts = { globalSetLayout };
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 0;
-        pipelineLayoutInfo.pSetLayouts = nullptr;
+        pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
+        pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
         pipelineLayoutInfo.pushConstantRangeCount = 1;
         pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -84,13 +87,21 @@ namespace Lotus
     {
         m_Pipeline->Bind(frameInfo.commandBuffer);
 
-        const auto projectionView = frameInfo.camera.GetProjectionMatrix() * frameInfo.camera.GetViewMatrix();
+                vkCmdBindDescriptorSets(
+            frameInfo.commandBuffer,
+            VK_PIPELINE_BIND_POINT_GRAPHICS,
+            m_PipelineLayout,
+            0,
+            1,
+            &frameInfo.globalDescriptorSet,
+            0,
+            nullptr
+        );
 
         for (auto& obj : gameObjects)
         {
             SimplePushConstantData push{};
-            auto modelMatrix = obj.transform.GetTransform();
-            push.transform = projectionView * modelMatrix;
+            push.modelMatrix = obj.transform.GetTransform();
             push.normalMatrix = obj.transform.GetNormalMatrix();
 
             vkCmdPushConstants(

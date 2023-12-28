@@ -6,6 +6,7 @@
 #include "Renderer/Device.h"
 #include "Lotus/GameObject.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/Descriptors.h"
 
 namespace Lotus {
 
@@ -31,6 +32,7 @@ namespace Lotus {
         Device m_Device{ m_Window };
         Renderer m_Renderer{ m_Window, m_Device };
 
+        std::unique_ptr<DescriptorPool> m_GlobalPool{};
         std::vector<GameObject> m_GameObjects;
         std::vector<GameObject> m_LineListGameObjects;
     };

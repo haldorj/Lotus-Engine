@@ -29,6 +29,11 @@ namespace Lotus {
 
     Application::Application()
     {
+        m_GlobalPool =
+            DescriptorPool::Builder(m_Device)
+            .SetMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
+            .AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+            .Build();
         LoadGameObjects();
     }
 
@@ -50,6 +55,26 @@ namespace Lotus {
             uboBuffers[i]->Map();
         }
 
+        auto globalSetLayout =
+            DescriptorSetLayout::Builder(m_Device)
+            .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .Build();
+
+        std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < globalDescriptorSets.size(); i++)
+        {
+            auto bufferInfo = uboBuffers[i]->DescriptorInfo();
+            DescriptorWriter(*globalSetLayout, *m_GlobalPool)
+                .WriteBuffer(0, &bufferInfo)
+                .Build(globalDescriptorSets[i]);
+        }
+
+        SimpleRenderSystem simpleRenderSystem{
+            m_Device,
+            m_Renderer.GetSwapChainRenderPass(),
+            globalSetLayout->GetDescriptorSetLayout()
+        };
+
         Camera camera{};
         auto cameraObject = GameObject::CreateGameObject();
         cameraObject.transform.position = glm::vec3{ 0.0f, -2.0f, 1.0f };
@@ -59,8 +84,7 @@ namespace Lotus {
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
-        SimpleRenderSystem simpleRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass() };
-        SimpleRenderSystem LineListRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST };
+        //SimpleRenderSystem LineListRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST };
         while (!m_Window.Closed())
         {
             m_Window.Update();
@@ -84,7 +108,13 @@ namespace Lotus {
             if (auto commandBuffer = m_Renderer.BeginFrame())
             {
                 int frameIndex = m_Renderer.GetFrameIndex();
-                FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera };
+                FrameInfo frameInfo{
+                    frameIndex,
+                    frameTime,
+                    commandBuffer,
+                    camera,
+                    globalDescriptorSets[frameIndex]
+                };
                 // Update
                 GlobalUbo ubo{};
                 ubo.projectionView = camera.GetProjectionMatrix() * camera.GetViewMatrix();
@@ -93,69 +123,12 @@ namespace Lotus {
                 // Render
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.RenderGameObjects(frameInfo, m_GameObjects);
-                LineListRenderSystem.RenderGameObjects(frameInfo, m_LineListGameObjects);
+                //LineListRenderSystem.RenderGameObjects(frameInfo, m_LineListGameObjects);
                 m_Renderer.EndSwapChainRenderPass(commandBuffer);
                 m_Renderer.EndFrame();
             }
         }
-    }
-
-    std::unique_ptr<Model> createCubeModel(Device& device, glm::vec3 offset)
-    {
-        Model::Builder modelBuilder{};
-        modelBuilder.vertices = {
-
-            // left face (white)
-            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
-
-            // right face (yellow)
-            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
-
-            // top face (orange)
-            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-
-            // back face (red)
-            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-
-            // top face (blue)
-            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-
-            // bottom face (green)
-            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-
-        };
-        for (auto& v : modelBuilder.vertices) {
-            v.position += offset;
-        }
-
-        modelBuilder.indices = {
-            0, 1, 2, 0, 3, 1,
-            4, 5, 6, 4, 7, 5, 
-            8, 9, 10, 8, 11, 9,
-            12, 13, 14, 12, 15, 13, 
-            16, 17, 18, 16, 19, 17, 
-            20, 21, 22, 20, 23, 21
-        };
-
-        return std::make_unique<Model>(device, modelBuilder);
+        vkDeviceWaitIdle(m_Device.GetDevice());
     }
 
     std::unique_ptr<Model> createXYZ(Device& device, glm::vec3 offset)
@@ -190,30 +163,39 @@ namespace Lotus {
 
     void Application::LoadGameObjects()
     {
-        std::shared_ptr<Model> model = createCubeModel(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-        auto cube = GameObject::CreateGameObject();
-        cube.model = model;
-        cube.transform.position = { 1.f, 1.f, 0.25f };
-        cube.transform.scale = { .5f, .5f, .5f };
-        m_GameObjects.push_back(std::move(cube));
-         
-        std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-        auto xyz = GameObject::CreateGameObject();
-        xyz.model = XYZmodel;
-        xyz.transform.position = { 0.0f, 0.0f, 0.0f };
-        xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
-        m_LineListGameObjects.push_back(std::move(xyz));
+        //std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
+        //auto xyz = GameObject::CreateGameObject();
+        //xyz.model = XYZmodel;
+        //xyz.transform.position = { 0.0f, 0.0f, 0.0f };
+        //xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
+        //m_LineListGameObjects.push_back(std::move(xyz));
 
         const std::shared_ptr<Model> vikingRoom =
             Model::CreateModelFromFile(m_Device, "../Assets/Models/viking_room.obj");
-
         auto gameObject = GameObject::CreateGameObject();
         gameObject.model = vikingRoom;
         gameObject.transform.position = { 2.5f, 2.5f, 0.0f };
-        
         gameObject.transform.rotation = glm::vec3{ 0.0f, 0.0f, -90.f };
-        //gameObject.transform.scale = { 2.5f, 2.5f, 2.5f };
         m_GameObjects.push_back(std::move(gameObject));
+
+        const std::shared_ptr<Model> smoothVase =
+            Model::CreateModelFromFile(m_Device, "../Assets/Models/smooth_vase.obj");
+        auto gameObject2 = GameObject::CreateGameObject();
+        gameObject2.model = smoothVase;
+        gameObject2.transform.position = { 1.f, 1.f, 0.0f };
+  
+        gameObject2.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
+        gameObject2.transform.scale = { 2.f, 1.f, 2.f };
+        m_GameObjects.push_back(std::move(gameObject2));
+
+        const std::shared_ptr<Model> flatVase =
+            Model::CreateModelFromFile(m_Device, "../Assets/Models/flat_vase.obj");
+        auto gameObject3 = GameObject::CreateGameObject();
+        gameObject3.model = flatVase;
+        gameObject3.transform.position = { 2.f, 1.f, 0.0f };
+        gameObject3.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
+        gameObject3.transform.scale = { 2.f, 1.f, 2.f };
+        m_GameObjects.push_back(std::move(gameObject3));
     }
 
 }

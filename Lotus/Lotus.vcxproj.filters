@@ -1343,6 +1343,7 @@
     </ClInclude>
     <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Renderer\FrameInfo.h" />
+    <ClInclude Include="src\Renderer\Descriptors.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1388,5 +1389,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Renderer\Descriptors.cpp" />
   </ItemGroup>
 </Project>
