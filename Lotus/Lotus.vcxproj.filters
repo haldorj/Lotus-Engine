@@ -16,6 +16,9 @@
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{4D9AFFB3-B904-B42A-0243-65D06EEC917F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Window">
       <UniqueIdentifier>{74C3D837-607B-1A85-C982-F3E0B559B575}</UniqueIdentifier>
     </Filter>
@@ -86,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="src\Renderer\SwapChain.h">
       <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Utils.h">
+      <Filter>src\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
@@ -1335,7 +1341,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\Utils.h" />
+    <ClInclude Include="src\Renderer\Buffer.h" />
+    <ClInclude Include="src\Renderer\FrameInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1380,5 +1387,6 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Buffer.cpp" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 #include "Camera/Camera.h"
 
 #include <memory>
+#include "FrameInfo.h"
 
 namespace Lotus
 {
@@ -20,7 +21,7 @@ namespace Lotus
         SimpleRenderSystem(const SimpleRenderSystem&) = delete; // delete copy constructor
         SimpleRenderSystem operator=(const SimpleRenderSystem&) = delete; // delete copy operator
 
-        void RenderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject>& gameObjects, const Camera& camera);
+        void RenderGameObjects(FrameInfo& frameInfo, std::vector<GameObject>& gameObjects);
     private:
         void CreatePipelineLayout();
         void CreatePipeline(VkRenderPass renderPass, VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);

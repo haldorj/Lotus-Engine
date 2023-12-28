@@ -80,11 +80,11 @@ namespace Lotus
         );
     }
 
-    void SimpleRenderSystem::RenderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject>& gameObjects, const Camera& camera)
+    void SimpleRenderSystem::RenderGameObjects(FrameInfo& frameInfo, std::vector<GameObject>& gameObjects)
     {
-        m_Pipeline->Bind(commandBuffer);
+        m_Pipeline->Bind(frameInfo.commandBuffer);
 
-        auto projectionView = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+        const auto projectionView = frameInfo.camera.GetProjectionMatrix() * frameInfo.camera.GetViewMatrix();
 
         for (auto& obj : gameObjects)
         {
@@ -94,16 +94,15 @@ namespace Lotus
             push.normalMatrix = obj.transform.GetNormalMatrix();
 
             vkCmdPushConstants(
-                commandBuffer,
+                frameInfo.commandBuffer,
                 m_PipelineLayout,
                 VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
                 sizeof(SimplePushConstantData),
                 &push
             );
-
-            obj.model->Bind(commandBuffer);
-            obj.model->Draw(commandBuffer);
+            obj.model->Bind(frameInfo.commandBuffer);
+            obj.model->Draw(frameInfo.commandBuffer);
         }
     }
 }

@@ -1,15 +1,17 @@
 #include "lotuspch.h"
+
 #include "Model.h"
-
-#include <cassert>
-#include <cstring>
-
 #include "Utils/Utils.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
+
+#include <cassert>
+#include <cstring>
+#include <iostream>
+#include <unordered_map>
 
 namespace std
 {
@@ -28,9 +30,8 @@ namespace std
     };
 }
 
-
-namespace Lotus {
-
+namespace Lotus
+{
     Model::Model(Device& device, const Builder& builder)
         : m_Device{ device }
     {
@@ -38,35 +39,23 @@ namespace Lotus {
         CreateIndexBuffers(builder.indices);
     }
 
-    Model::~Model()
-    {
-        vkDestroyBuffer(m_Device.GetDevice(), m_VertexBuffer, nullptr);
-        vkFreeMemory(m_Device.GetDevice(), m_VertexBufferMemory, nullptr);
-        if (m_HasIndexBuffer)
-        {
-            vkDestroyBuffer(m_Device.GetDevice(), m_IndexBuffer, nullptr);
-            vkFreeMemory(m_Device.GetDevice(), m_IndexBufferMemory, nullptr);
-        }
-    }
+    Model::~Model() { }
 
     std::unique_ptr<Model> Model::CreateModelFromFile(Device& device, const std::string& filepath)
     {
         Builder builder{};
         builder.LoadModel(filepath);
-        std::cout << "Model loaded from file: " << filepath << "\n"
-            << "Model has " << builder.vertices.size() << " vertices" << std::endl;
-
         return std::make_unique<Model>(device, builder);
     }
 
     void Model::Bind(VkCommandBuffer commandBuffer) const
     {
-        VkBuffer buffers[] = { m_VertexBuffer };
-        VkDeviceSize offsets[] = { 0 };
+        const VkBuffer buffers[] = { m_VertexBuffer->GetBuffer() };
+        constexpr VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
         if (m_HasIndexBuffer)
-            vkCmdBindIndexBuffer(commandBuffer, m_IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindIndexBuffer(commandBuffer, m_IndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
     }
 
     void Model::Draw(VkCommandBuffer commandBuffer) const
@@ -77,70 +66,63 @@ namespace Lotus {
             vkCmdDraw(commandBuffer, m_VertexCount, 1, 0, 0);
     }
 
-    void Model::CreateVertexBuffers(const std::vector<Vertex>& vertices)
-    {
+    void Model::CreateVertexBuffers(const std::vector<Vertex>& vertices) {
         m_VertexCount = static_cast<uint32_t>(vertices.size());
         assert(m_VertexCount >= 3 && "Vertex count must be at least 3");
         VkDeviceSize bufferSize = sizeof(vertices[0]) * m_VertexCount;
+        uint32_t vertexSize = sizeof(vertices[0]);
 
-        VkBuffer stagingBuffer;
-        VkDeviceMemory stagingBufferMemory;
-        m_Device.CreateBuffer(
-            bufferSize,
+        Buffer stagingBuffer{
+            m_Device,
+            vertexSize,
+            m_VertexCount,
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            stagingBuffer,
-            stagingBufferMemory);
+        };
 
-        void* data;
-        vkMapMemory(m_Device.GetDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-        vkUnmapMemory(m_Device.GetDevice(), stagingBufferMemory);
+        stagingBuffer.Map();
+        stagingBuffer.WriteToBuffer((void*)vertices.data());
 
-        m_Device.CreateBuffer(
-            bufferSize,
+        m_VertexBuffer = std::make_unique<Buffer>(
+            m_Device,
+            vertexSize,
+            m_VertexCount,
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            m_VertexBuffer,
-            m_VertexBufferMemory);
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-        m_Device.CopyBuffer(stagingBuffer, m_VertexBuffer, bufferSize);
-
-        vkDestroyBuffer(m_Device.GetDevice(), stagingBuffer, nullptr);
-        vkFreeMemory(m_Device.GetDevice(), stagingBufferMemory, nullptr);
+        m_Device.CopyBuffer(stagingBuffer.GetBuffer(), m_VertexBuffer->GetBuffer(), bufferSize);
     }
 
-    void Model::CreateIndexBuffers(const std::vector<uint32_t>& indices)
-    {
+    void Model::CreateIndexBuffers(const std::vector<uint32_t>& indices) {
         m_IndexCount = static_cast<uint32_t>(indices.size());
         m_HasIndexBuffer = m_IndexCount > 0;
-        if (!m_HasIndexBuffer) return;
+
+        if (!m_HasIndexBuffer) {
+            return;
+        }
+
         VkDeviceSize bufferSize = sizeof(indices[0]) * m_IndexCount;
-        VkBuffer stagingBuffer;
-        VkDeviceMemory stagingBufferMemory;
-        m_Device.CreateBuffer(
-            bufferSize,
+        uint32_t indexSize = sizeof(indices[0]);
+
+        Buffer stagingBuffer{
+            m_Device,
+            indexSize,
+            m_IndexCount,
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            stagingBuffer,
-            stagingBufferMemory);
+        };
 
-        void* data;
-        vkMapMemory(m_Device.GetDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-        vkUnmapMemory(m_Device.GetDevice(), stagingBufferMemory);
+        stagingBuffer.Map();
+        stagingBuffer.WriteToBuffer((void*)indices.data());
 
-        m_Device.CreateBuffer(
-            bufferSize,
+        m_IndexBuffer = std::make_unique<Buffer>(
+            m_Device,
+            indexSize,
+            m_IndexCount,
             VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            m_IndexBuffer,
-            m_IndexBufferMemory);
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-        m_Device.CopyBuffer(stagingBuffer, m_IndexBuffer, bufferSize);
-
-        vkDestroyBuffer(m_Device.GetDevice(), stagingBuffer, nullptr);
-        vkFreeMemory(m_Device.GetDevice(), stagingBufferMemory, nullptr);
+        m_Device.CopyBuffer(stagingBuffer.GetBuffer(), m_IndexBuffer->GetBuffer(), bufferSize);
     }
 
     std::vector<VkVertexInputBindingDescription> Model::Vertex::GetBindingDescriptions()
@@ -233,5 +215,4 @@ namespace Lotus {
             }
         }
     }
-
 }
