@@ -21,7 +21,7 @@ namespace Lotus
         SimpleRenderSystem(const SimpleRenderSystem&) = delete; // delete copy constructor
         SimpleRenderSystem operator=(const SimpleRenderSystem&) = delete; // delete copy operator
 
-        void RenderGameObjects(FrameInfo& frameInfo, std::vector<GameObject>& gameObjects);
+        void RenderGameObjects(FrameInfo& frameInfo);
     private:
         void CreatePipelineLayout(VkDescriptorSetLayout globalDescriptorSet);
         void CreatePipeline(VkRenderPass renderPass, VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);

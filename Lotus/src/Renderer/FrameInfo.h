@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Camera/Camera.h"
+#include "Lotus/GameObject.h"
 #include <vulkan/vulkan.h>
 
 namespace Lotus
@@ -12,5 +13,6 @@ namespace Lotus
         VkCommandBuffer commandBuffer;
         Camera& camera;
         VkDescriptorSet globalDescriptorSet;
+        GameObject::Map& gameObjects;
     };
 }

@@ -23,7 +23,9 @@ namespace Lotus {
     struct GlobalUbo
     {
         glm::mat4 projectionView{ 1.f };
-        glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+        glm::vec4 ambientLight{ 1.0f, 1.0f, 1.0f, 0.02f };
+        glm::vec3 lightPosition{ 3.0f, 1.0f, 1.0f };
+        alignas(16) glm::vec4 lightColor{ 1.0f };
     };
 
 
@@ -57,7 +59,7 @@ namespace Lotus {
 
         auto globalSetLayout =
             DescriptorSetLayout::Builder(m_Device)
-            .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
             .Build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -113,7 +115,8 @@ namespace Lotus {
                     frameTime,
                     commandBuffer,
                     camera,
-                    globalDescriptorSets[frameIndex]
+                    globalDescriptorSets[frameIndex],
+                    m_GameObjects
                 };
                 // Update
                 GlobalUbo ubo{};
@@ -122,7 +125,7 @@ namespace Lotus {
                 uboBuffers[frameIndex]->Flush();
                 // Render
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.RenderGameObjects(frameInfo, m_GameObjects);
+                simpleRenderSystem.RenderGameObjects(frameInfo);
                 //LineListRenderSystem.RenderGameObjects(frameInfo, m_LineListGameObjects);
                 m_Renderer.EndSwapChainRenderPass(commandBuffer);
                 m_Renderer.EndFrame();
@@ -163,30 +166,22 @@ namespace Lotus {
 
     void Application::LoadGameObjects()
     {
-        //std::shared_ptr<Model> XYZmodel = createXYZ(m_Device, glm::vec3{ 0.0f, 0.0f, 0.0f });
-        //auto xyz = GameObject::CreateGameObject();
-        //xyz.model = XYZmodel;
-        //xyz.transform.position = { 0.0f, 0.0f, 0.0f };
-        //xyz.transform.scale = { 1.0f, 1.0f, 1.0f };
-        //m_LineListGameObjects.push_back(std::move(xyz));
-
         const std::shared_ptr<Model> vikingRoom =
             Model::CreateModelFromFile(m_Device, "../Assets/Models/viking_room.obj");
         auto gameObject = GameObject::CreateGameObject();
         gameObject.model = vikingRoom;
-        gameObject.transform.position = { 2.5f, 2.5f, 0.0f };
+        gameObject.transform.position = { 2.5f, 2.5f, 0.1f };
         gameObject.transform.rotation = glm::vec3{ 0.0f, 0.0f, -90.f };
-        m_GameObjects.push_back(std::move(gameObject));
+        m_GameObjects.emplace(gameObject.GetId(), std::move(gameObject));
 
         const std::shared_ptr<Model> smoothVase =
             Model::CreateModelFromFile(m_Device, "../Assets/Models/smooth_vase.obj");
         auto gameObject2 = GameObject::CreateGameObject();
         gameObject2.model = smoothVase;
         gameObject2.transform.position = { 1.f, 1.f, 0.0f };
-  
         gameObject2.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
         gameObject2.transform.scale = { 2.f, 1.f, 2.f };
-        m_GameObjects.push_back(std::move(gameObject2));
+        m_GameObjects.emplace(gameObject2.GetId(), std::move(gameObject2));
 
         const std::shared_ptr<Model> flatVase =
             Model::CreateModelFromFile(m_Device, "../Assets/Models/flat_vase.obj");
@@ -195,7 +190,15 @@ namespace Lotus {
         gameObject3.transform.position = { 2.f, 1.f, 0.0f };
         gameObject3.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
         gameObject3.transform.scale = { 2.f, 1.f, 2.f };
-        m_GameObjects.push_back(std::move(gameObject3));
+        m_GameObjects.emplace(gameObject3.GetId(), std::move(gameObject3));
+
+        const std::shared_ptr<Model> quadmodel = Model::CreateModelFromFile(m_Device, "../assets/models/quad.obj");
+        auto quad = GameObject::CreateGameObject();
+        quad.model = quadmodel;
+        quad.transform.position = { 1.5f, 1.5f, 0.f };
+        quad.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
+        quad.transform.scale = { 3.f, 1.f, 3.f };
+        m_GameObjects.emplace(quad.GetId(), std::move(quad));
     }
 
 }

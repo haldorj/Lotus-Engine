@@ -83,7 +83,7 @@ namespace Lotus
         );
     }
 
-    void SimpleRenderSystem::RenderGameObjects(FrameInfo& frameInfo, std::vector<GameObject>& gameObjects)
+    void SimpleRenderSystem::RenderGameObjects(FrameInfo& frameInfo)
     {
         m_Pipeline->Bind(frameInfo.commandBuffer);
 
@@ -98,9 +98,12 @@ namespace Lotus
             nullptr
         );
 
-        for (auto& obj : gameObjects)
+        for (auto& kv : frameInfo.gameObjects)
         {
             SimplePushConstantData push{};
+            auto& obj = kv.second;
+            if (obj.model == nullptr)
+                continue;
             push.modelMatrix = obj.transform.GetTransform();
             push.normalMatrix = obj.transform.GetNormalMatrix();
 
