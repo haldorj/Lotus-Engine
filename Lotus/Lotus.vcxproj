@@ -159,7 +159,8 @@
     <ClInclude Include="src\Renderer\Model.h" />
     <ClInclude Include="src\Renderer\Pipeline.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
-    <ClInclude Include="src\Renderer\SimpleRenderSystem.h" />
+    <ClInclude Include="src\Systems\PointLightSystem.h" />
+    <ClInclude Include="src\Systems\SimpleRenderSystem.h" />
     <ClInclude Include="src\Renderer\SwapChain.h" />
     <ClInclude Include="src\Utils\Utils.h" />
     <ClInclude Include="src\Window\Window.h" />
@@ -592,7 +593,8 @@
     <ClCompile Include="src\Renderer\Model.cpp" />
     <ClCompile Include="src\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\Renderer\SimpleRenderSystem.cpp" />
+    <ClCompile Include="src\Systems\PointLightSystem.cpp" />
+    <ClCompile Include="src\Systems\SimpleRenderSystem.cpp" />
     <ClCompile Include="src\Renderer\SwapChain.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\lotuspch.cpp">
@@ -606,6 +608,10 @@
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\PointLightShader.frag" />
+    <None Include="Shaders\PointLightShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Window/Window.h"
-#include "Pipeline.h"
-#include "Device.h"
+#include "Renderer/Pipeline.h"
+#include "Renderer/Device.h"
 #include "Lotus/GameObject.h"
 #include "Camera/Camera.h"
+#include "Renderer/FrameInfo.h"
 
 #include <memory>
-#include "FrameInfo.h"
 
 namespace Lotus
 {

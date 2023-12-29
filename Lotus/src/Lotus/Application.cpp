@@ -1,6 +1,7 @@
 #include "lotuspch.h"
 #include "Application.h"
-#include "Renderer/SimpleRenderSystem.h"
+#include "Systems/SimpleRenderSystem.h"
+#include "Systems/PointLightSystem.h"
 #include "Camera/Camera.h"
 #include "Input/KeyboardMovementController.h"
 #include "Input/MouseMovementController.h"
@@ -22,10 +23,11 @@ namespace Lotus {
 
     struct GlobalUbo
     {
-        glm::mat4 projectionView{ 1.f };
+        glm::mat4 projection{ 1.f };
+        glm::mat4 view{ 1.f };
         glm::vec4 ambientLight{ 1.0f, 1.0f, 1.0f, 0.02f };
         glm::vec3 lightPosition{ 3.0f, 1.0f, 1.0f };
-        alignas(16) glm::vec4 lightColor{ 1.0f };
+        alignas(16) glm::vec4 lightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
     };
 
 
@@ -36,6 +38,7 @@ namespace Lotus {
             .SetMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
             .AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
             .Build();
+
         LoadGameObjects();
     }
 
@@ -76,6 +79,12 @@ namespace Lotus {
             m_Renderer.GetSwapChainRenderPass(),
             globalSetLayout->GetDescriptorSetLayout()
         };
+
+        PointLightSystem pointLightSystem{
+			m_Device,
+			m_Renderer.GetSwapChainRenderPass(),
+			globalSetLayout->GetDescriptorSetLayout()
+		};
 
         Camera camera{};
         auto cameraObject = GameObject::CreateGameObject();
@@ -120,12 +129,14 @@ namespace Lotus {
                 };
                 // Update
                 GlobalUbo ubo{};
-                ubo.projectionView = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+                ubo.projection = camera.GetProjectionMatrix();
+                ubo.view = camera.GetViewMatrix();
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
                 // Render
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.RenderGameObjects(frameInfo);
+                pointLightSystem.Render(frameInfo);
                 //LineListRenderSystem.RenderGameObjects(frameInfo, m_LineListGameObjects);
                 m_Renderer.EndSwapChainRenderPass(commandBuffer);
                 m_Renderer.EndFrame();
