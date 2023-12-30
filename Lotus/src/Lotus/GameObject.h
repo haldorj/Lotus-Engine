@@ -46,16 +46,13 @@ namespace Lotus
 		};
 
 	private:
-		glm::mat4 GetRotationMatrix() const
-		{
-			glm::mat4 rotationMatrix =
-				glm::rotate(glm::mat4(1.f), glm::radians(rotation.x), glm::vec3(1.f, 0.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), glm::radians(rotation.y), glm::vec3(0.f, 1.f, 0.f)) *
-				glm::rotate(glm::mat4(1.f), glm::radians(rotation.z), glm::vec3(0.f, 0.f, 1.f));
-			return rotationMatrix;
-		}
+		glm::mat4 GetRotationMatrix() const;
 	};
 
+	struct PointLightComponent {
+		float lightIntensity = 1.0f;
+
+	};
 
 	class GameObject
 	{
@@ -67,6 +64,11 @@ namespace Lotus
 			static id_t currentId = 0;
 			return GameObject{ currentId++ };
 		}
+
+		static GameObject MakePointLight(
+			float intensity = 10.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f)
+		);
+
 		GameObject(const GameObject&) = delete;
 		GameObject& operator=(const GameObject&) = delete;
 		GameObject(GameObject&&) = default;
@@ -74,9 +76,12 @@ namespace Lotus
 
 		id_t GetId() { return id; }
 
-		std::shared_ptr<Model> model{};
+		
 		glm::vec3 color{};
 		TransformComponent transform{};
+
+		std::shared_ptr<Model> model{};
+		std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
 	private:
 		GameObject(id_t objId) : id{ objId } {}

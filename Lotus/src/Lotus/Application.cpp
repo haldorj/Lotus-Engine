@@ -21,16 +21,6 @@ namespace Lotus {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
-    struct GlobalUbo
-    {
-        glm::mat4 projection{ 1.f };
-        glm::mat4 view{ 1.f };
-        glm::vec4 ambientLight{ 1.0f, 1.0f, 1.0f, 0.02f };
-        glm::vec3 lightPosition{ 3.0f, 1.0f, 1.0f };
-        alignas(16) glm::vec4 lightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
-    };
-
-
     Application::Application()
     {
         m_GlobalPool =
@@ -131,6 +121,7 @@ namespace Lotus {
                 GlobalUbo ubo{};
                 ubo.projection = camera.GetProjectionMatrix();
                 ubo.view = camera.GetViewMatrix();
+                pointLightSystem.Update(frameInfo, ubo);
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
                 // Render
@@ -181,15 +172,15 @@ namespace Lotus {
             Model::CreateModelFromFile(m_Device, "../Assets/Models/viking_room.obj");
         auto gameObject = GameObject::CreateGameObject();
         gameObject.model = vikingRoom;
-        gameObject.transform.position = { 2.5f, 2.5f, 0.1f };
-        gameObject.transform.rotation = glm::vec3{ 0.0f, 0.0f, -90.f };
+        gameObject.transform.position = { 2.f, 2.0f, 0.1f };
+        gameObject.transform.rotation = glm::vec3{ 0.0f, 0.0f, -135.f };
         m_GameObjects.emplace(gameObject.GetId(), std::move(gameObject));
 
         const std::shared_ptr<Model> smoothVase =
             Model::CreateModelFromFile(m_Device, "../Assets/Models/smooth_vase.obj");
         auto gameObject2 = GameObject::CreateGameObject();
         gameObject2.model = smoothVase;
-        gameObject2.transform.position = { 1.f, 1.f, 0.0f };
+        gameObject2.transform.position = { -0.5f, 0.f, 0.0f };
         gameObject2.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
         gameObject2.transform.scale = { 2.f, 1.f, 2.f };
         m_GameObjects.emplace(gameObject2.GetId(), std::move(gameObject2));
@@ -198,7 +189,7 @@ namespace Lotus {
             Model::CreateModelFromFile(m_Device, "../Assets/Models/flat_vase.obj");
         auto gameObject3 = GameObject::CreateGameObject();
         gameObject3.model = flatVase;
-        gameObject3.transform.position = { 2.f, 1.f, 0.0f };
+        gameObject3.transform.position = { 0.5f, 0.f, 0.0f };
         gameObject3.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
         gameObject3.transform.scale = { 2.f, 1.f, 2.f };
         m_GameObjects.emplace(gameObject3.GetId(), std::move(gameObject3));
@@ -206,10 +197,32 @@ namespace Lotus {
         const std::shared_ptr<Model> quadmodel = Model::CreateModelFromFile(m_Device, "../assets/models/quad.obj");
         auto quad = GameObject::CreateGameObject();
         quad.model = quadmodel;
-        quad.transform.position = { 1.5f, 1.5f, 0.f };
+        quad.transform.position = { 0.f, 0.f, 0.f };
         quad.transform.rotation = glm::vec3{ -90.0f, 0.0f, 0.0f };
         quad.transform.scale = { 3.f, 1.f, 3.f };
         m_GameObjects.emplace(quad.GetId(), std::move(quad));
+
+        std::vector<glm::vec3> lightColors{
+             {1.f, .1f, .1f},
+             {.1f, .1f, 1.f},
+             {.1f, 1.f, .1f},
+             {1.f, 1.f, .1f},
+             {.1f, 1.f, 1.f},
+             {1.f, 1.f, 1.f}
+        };
+
+        for (int i = 0; i < lightColors.size(); i++)
+        { 
+            auto pointLight = GameObject::MakePointLight(0.2);
+            pointLight.color = lightColors[i];
+            auto rotate = glm::rotate(
+                glm::mat4(1.0f),
+                (i * glm::two_pi<float>()) / lightColors.size(),
+                glm::vec3{ 0.f, 0.f, 1.f }
+            );
+            pointLight.transform.position = glm::vec3(rotate * glm::vec4(1, 1, 1, 1));
+            m_GameObjects.emplace(pointLight.GetId(), std::move(pointLight));
+        }
     }
 
 }

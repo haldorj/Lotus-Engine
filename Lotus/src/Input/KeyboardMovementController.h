@@ -26,6 +26,6 @@ namespace  Lotus
 
         KeyMappings m_KeyMappings;
         float m_MovementSpeed = 3.0f;
-        float m_RotationSpeed = 45.f;
+        float m_RotationSpeed = 90.f;
     };
 }

@@ -16,6 +16,9 @@
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Systems">
+      <UniqueIdentifier>{34DEBD24-A093-361A-2988-30F1953C2D1E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Utils">
       <UniqueIdentifier>{4D9AFFB3-B904-B42A-0243-65D06EEC917F}</UniqueIdentifier>
     </Filter>
@@ -72,7 +75,16 @@
     <ClInclude Include="src\Lotus\Log.h">
       <Filter>src\Lotus</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Buffer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Descriptors.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\Device.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\FrameInfo.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Model.h">
@@ -84,11 +96,14 @@
     <ClInclude Include="src\Renderer\Renderer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Systems\SimpleRenderSystem.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer\SwapChain.h">
       <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\PointLightSystem.h">
+      <Filter>src\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\SimpleRenderSystem.h">
+      <Filter>src\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\Utils.h">
       <Filter>src\Utils</Filter>
@@ -1341,10 +1356,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\Buffer.h" />
-    <ClInclude Include="src\Renderer\FrameInfo.h" />
-    <ClInclude Include="src\Renderer\Descriptors.h" />
-    <ClInclude Include="src\Systems\PointLightSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp">
@@ -1365,6 +1376,12 @@
     <ClCompile Include="src\Lotus\Log.cpp">
       <Filter>src\Lotus</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Buffer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Descriptors.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\Device.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
@@ -1377,11 +1394,14 @@
     <ClCompile Include="src\Renderer\Renderer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Systems\SimpleRenderSystem.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer\SwapChain.cpp">
       <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Systems\PointLightSystem.cpp">
+      <Filter>src\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Systems\SimpleRenderSystem.cpp">
+      <Filter>src\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Window\Window.cpp">
       <Filter>src\Window</Filter>
@@ -1389,12 +1409,5 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Renderer\Descriptors.cpp" />
-    <ClCompile Include="src\Systems\PointLightSystem.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\PointLightShader.frag" />
-    <None Include="Shaders\PointLightShader.vert" />
   </ItemGroup>
 </Project>

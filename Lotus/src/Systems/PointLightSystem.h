@@ -20,6 +20,7 @@ namespace Lotus
         PointLightSystem(const PointLightSystem&) = delete; // delete copy constructor
         PointLightSystem operator=(const PointLightSystem&) = delete; // delete copy operator
 
+        void Update(FrameInfo& frameInfo, GlobalUbo& ubo);
         void Render(FrameInfo& frameInfo);
     private:
         void CreatePipelineLayout(VkDescriptorSetLayout globalDescriptorSet);
