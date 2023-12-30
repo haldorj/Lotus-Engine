@@ -26,6 +26,7 @@ namespace Lotus {
 	void Camera::LookAt(glm::vec3 eye, glm::vec3& target, glm::vec3& up)
 	{
 		m_ViewMatrix = glm::lookAt(eye, target, up);
+		m_InverseViewMatrix = glm::inverse(m_ViewMatrix);
 		m_Position = eye;
 	}
 	

@@ -121,6 +121,7 @@ namespace Lotus {
                 GlobalUbo ubo{};
                 ubo.projection = camera.GetProjectionMatrix();
                 ubo.view = camera.GetViewMatrix();
+                ubo.inverseView = camera.GetInverseViewMatrix();
                 pointLightSystem.Update(frameInfo, ubo);
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
