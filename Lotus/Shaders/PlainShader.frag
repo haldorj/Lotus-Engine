@@ -50,7 +50,7 @@ void main() {
 		float blinnTerm = dot(surfaceNormal, halfAngle);
 		blinnTerm = max(blinnTerm, 0);
 		blinnTerm = pow(blinnTerm, 32.0);
-		specularLight += intensity * blinnTerm;
+		specularLight += light.color.xyz * attenuation * blinnTerm;
 	}
 
 	outColor = vec4(diffuseLight * fragColor + specularLight * fragColor, 1.0);

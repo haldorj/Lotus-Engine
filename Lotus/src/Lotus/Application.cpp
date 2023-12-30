@@ -127,8 +127,11 @@ namespace Lotus {
                 uboBuffers[frameIndex]->Flush();
                 // Render
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
+
+                // ORDER MATTERS
                 simpleRenderSystem.RenderGameObjects(frameInfo);
                 pointLightSystem.Render(frameInfo);
+
                 //LineListRenderSystem.RenderGameObjects(frameInfo, m_LineListGameObjects);
                 m_Renderer.EndSwapChainRenderPass(commandBuffer);
                 m_Renderer.EndFrame();
@@ -204,12 +207,14 @@ namespace Lotus {
         m_GameObjects.emplace(quad.GetId(), std::move(quad));
 
         std::vector<glm::vec3> lightColors{
-             {1.f, .1f, .1f},
-             {.1f, .1f, 1.f},
-             {.1f, 1.f, .1f},
-             {1.f, 1.f, .1f},
-             {.1f, 1.f, 1.f},
-             {1.f, 1.f, 1.f}
+             {1.f, .1f, .1f}, // red
+             {1.f, .5f, .1f}, // orange
+			 {1.f, 1.f, .1f}, // yellow
+             {.1f, 1.f, .1f}, // green
+             {.1f, 1.f, 1.f}, // cyan
+             {.1f, .1f, 1.f}, // blue
+			 {1.f, .1f, 1.f}, // magenta
+             {1.f, 1.f, 1.f}, // white
         };
 
         for (int i = 0; i < lightColors.size(); i++)

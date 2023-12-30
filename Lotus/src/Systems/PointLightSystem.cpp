@@ -57,9 +57,8 @@ namespace Lotus
         assert(m_PipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
 
         PipelineConfigInfo pipelineConfig{};
-        Pipeline::DefaultPipelineConfigInfo(
-            pipelineConfig
-        );
+        Pipeline::DefaultPipelineConfigInfo(pipelineConfig);
+        Pipeline::EnableAlphaBlending(pipelineConfig);
         pipelineConfig.bindingDescriptions.clear();
         pipelineConfig.attributeDescriptions.clear();
         pipelineConfig.renderPass = renderPass;
@@ -100,6 +99,17 @@ namespace Lotus
 
     void PointLightSystem::Render(FrameInfo& frameInfo)
     {
+        std::map<float, GameObject::id_t> sorted;
+        for (auto& kv : frameInfo.gameObjects)
+        {
+			auto& gameObject = kv.second;
+			if (gameObject.pointLight)
+			{
+				float distance = glm::length(frameInfo.camera.GetPosition() - gameObject.transform.position);
+				sorted[distance] = kv.first;
+			}
+		 }
+
         m_Pipeline->Bind(frameInfo.commandBuffer);
 
                 vkCmdBindDescriptorSets(
@@ -113,9 +123,9 @@ namespace Lotus
             nullptr
         );
 
-        for (auto& kv: frameInfo.gameObjects)
+        for (auto it = sorted.rbegin(); it != sorted.rend(); it++)
         {
-            auto& gameObject = kv.second;
+            auto& gameObject = frameInfo.gameObjects.at(it->second);
 			if (gameObject.pointLight)
 			{
 				PointLightPushConstantData push{};

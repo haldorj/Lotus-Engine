@@ -42,8 +42,8 @@ namespace Lotus
 
         void Bind(VkCommandBuffer commandBuffer);
 
-        static void DefaultPipelineConfigInfo(
-            PipelineConfigInfo& configInfo);
+        static void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
+        static void EnableAlphaBlending(PipelineConfigInfo& configInfo);
 
     private:
         static std::vector<char> ReadFile(const std::string& filepath);

@@ -12,7 +12,7 @@ namespace Lotus
 	public:
 		Camera();
 		void SetOrthographicProjection(float left, float right, float top, float bottom);
-		void SetPerspectiveProjection(float fovy, float aspect, float near, float far);
+		void SetPerspectiveProjection(float fovy, float aspect, float nearPlane, float farPlane);
 
 		void LookAt(glm::vec3 eye, glm::vec3& target, glm::vec3& up);
 		
@@ -26,6 +26,7 @@ namespace Lotus
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		const glm::mat4& GetInverseViewMatrix() const { return m_InverseViewMatrix; }
 		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+
 	private:
 		void RecalculateViewMatrix();
 	private:
