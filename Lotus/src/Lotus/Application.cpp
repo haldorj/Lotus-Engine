@@ -27,15 +27,14 @@ namespace Lotus {
             DescriptorPool::Builder(m_Device)
             .SetMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
             .AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+            .AddPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, SwapChain::MAX_FRAMES_IN_FLIGHT)
             .Build();
 
         LoadGameObjects();
-        m_Texture = new Texture( "../Assets/Textures/statue.jpg", m_Device );
     }
 
     Application::~Application()
     {
-        m_Texture->~Texture();
         vkDeviceWaitIdle(m_Device.GetDevice());
     }
 
@@ -55,7 +54,14 @@ namespace Lotus {
         auto globalSetLayout =
             DescriptorSetLayout::Builder(m_Device)
             .AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+            .AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
             .Build();
+
+        Texture texture("../Assets/Textures/viking_room.png", m_Device);
+        VkDescriptorImageInfo imageInfo{};
+        imageInfo.imageLayout = texture.GetImageLayout();
+        imageInfo.imageView = texture.GetImageView();
+        imageInfo.sampler = texture.GetSampler();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < globalDescriptorSets.size(); i++)
@@ -63,6 +69,7 @@ namespace Lotus {
             auto bufferInfo = uboBuffers[i]->DescriptorInfo();
             DescriptorWriter(*globalSetLayout, *m_GlobalPool)
                 .WriteBuffer(0, &bufferInfo)
+                .WriteImage(1, &imageInfo)
                 .Build(globalDescriptorSets[i]);
         }
 
@@ -202,7 +209,8 @@ namespace Lotus {
         gameObject3.transform.scale = { 2.f, 1.f, 2.f };
         m_GameObjects.emplace(gameObject3.GetId(), std::move(gameObject3));
 
-        const std::shared_ptr<Model> quadmodel = Model::CreateModelFromFile(m_Device, "../assets/models/quad.obj");
+        const std::shared_ptr<Model> quadmodel = 
+            Model::CreateModelFromFile(m_Device, "../assets/models/quad.obj");
         auto quad = GameObject::CreateGameObject();
         quad.model = quadmodel;
         quad.transform.position = { 0.f, 0.f, 0.f };

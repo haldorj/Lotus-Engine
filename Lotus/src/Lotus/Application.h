@@ -35,7 +35,6 @@ namespace Lotus {
 
         std::unique_ptr<DescriptorPool> m_GlobalPool{};
         GameObject::Map m_GameObjects;
-        Texture* m_Texture;
         //std::vector<GameObject> m_LineListGameObjects;
     };
 

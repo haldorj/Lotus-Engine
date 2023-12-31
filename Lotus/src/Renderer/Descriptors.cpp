@@ -39,7 +39,7 @@ namespace Lotus
         : m_Device{ lveDevice }, m_Bindings{ bindings }
     {
         std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-        for (auto kv : bindings)
+        for (auto& kv : bindings)
         {
             setLayoutBindings.push_back(kv.second);
         }
