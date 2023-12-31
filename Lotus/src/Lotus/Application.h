@@ -4,9 +4,10 @@
 #include "Log.h"
 #include "Window/Window.h"
 #include "Renderer/Device.h"
-#include "Lotus/GameObject.h"
+#include "GameObject/GameObject.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Descriptors.h"
+#include "Renderer/Texture.h"
 
 namespace Lotus {
 
@@ -34,6 +35,7 @@ namespace Lotus {
 
         std::unique_ptr<DescriptorPool> m_GlobalPool{};
         GameObject::Map m_GameObjects;
+        Texture* m_Texture;
         //std::vector<GameObject> m_LineListGameObjects;
     };
 

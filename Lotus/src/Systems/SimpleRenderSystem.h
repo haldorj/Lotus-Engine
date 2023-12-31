@@ -3,7 +3,7 @@
 #include "Window/Window.h"
 #include "Renderer/Pipeline.h"
 #include "Renderer/Device.h"
-#include "Lotus/GameObject.h"
+#include "GameObject/GameObject.h"
 #include "Camera/Camera.h"
 #include "Renderer/FrameInfo.h"
 

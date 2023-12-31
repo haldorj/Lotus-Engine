@@ -3,7 +3,7 @@
 #include "Window/Window.h"
 #include "Renderer/Pipeline.h"
 #include "Renderer/Device.h"
-#include "Lotus/GameObject.h"
+#include "GameObject/GameObject.h"
 #include "Camera/Camera.h"
 #include "Renderer/FrameInfo.h"
 
@@ -20,7 +20,7 @@ namespace Lotus
         PointLightSystem(const PointLightSystem&) = delete; // delete copy constructor
         PointLightSystem operator=(const PointLightSystem&) = delete; // delete copy operator
 
-        void Update(FrameInfo& frameInfo, GlobalUbo& ubo);
+        void Update(FrameInfo& frameInfo, GlobalUbo& ubo, float dt);
         void Render(FrameInfo& frameInfo);
     private:
         void CreatePipelineLayout(VkDescriptorSetLayout globalDescriptorSet);

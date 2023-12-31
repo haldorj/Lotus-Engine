@@ -71,22 +71,26 @@ namespace Lotus
         );
     }
 
-    void PointLightSystem::Update(FrameInfo& frameInfo, GlobalUbo& ubo)
+    void PointLightSystem::Update(FrameInfo& frameInfo, GlobalUbo& ubo, float dt)
     {
         auto rotate = glm::rotate(
             glm::mat4(1.0f),
             frameInfo.frameTime,
             glm::vec3{ 0.f, 0.f, 1.f }
         );
+
         int lightIndex = 0;
         for (auto& kv : frameInfo.gameObjects) 
         {
             auto &gameObject = kv.second;
             if (gameObject.pointLight)
             {
+                auto currentTime = std::chrono::high_resolution_clock::now();
+
                 assert(lightIndex < MAX_LIGHTS && "Too many pointlights!");
                 // update light position
                 gameObject.transform.position = rotate * glm::vec4(gameObject.transform.position, 1.0f);
+                gameObject.transform.position.z = 0.5f + glm::sin(dt)/glm::pi<float>();
 
                 ubo.pointLights[lightIndex].position = glm::vec4(gameObject.transform.position, 1.0f);
 				ubo.pointLights[lightIndex].color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);

@@ -18,6 +18,7 @@ IncludeDir["ImGui"] = "Lotus/vendor/imgui"
 IncludeDir["glm"] = "Lotus/vendor/glm"
 IncludeDir["Vulkan"] = "C:/VulkanSDK/1.3.268.0/Include"
 IncludeDir["tinyobjloader"] = "Lotus/vendor/tinyobjloader"
+IncludeDir["stb_image"] = "Lotus/vendor/stb_image"
 
 include "Lotus/vendor/GLFW"
 include "Lotus/vendor/imgui"
@@ -56,7 +57,8 @@ project "Lotus"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.Vulkan}",
-        "%{IncludeDir.tinyobjloader}"
+        "%{IncludeDir.tinyobjloader}",
+        "%{IncludeDir.stb_image}"
     }
 
     links 
@@ -117,6 +119,7 @@ project "Sandbox"
         "%{IncludeDir.Vulkan}",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.tinyobjloader}",
+        "%{IncludeDir.stb_image}"
     }
 
     links

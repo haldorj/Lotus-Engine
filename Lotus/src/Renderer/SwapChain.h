@@ -46,6 +46,7 @@ namespace Lotus
                 swapChain.m_SwapChainImageFormat == m_SwapChainImageFormat;
         }
 
+        VkImageView CreateImageView(VkImage image, VkFormat format);
     private:
         void Init();
         void CreateSwapChain();

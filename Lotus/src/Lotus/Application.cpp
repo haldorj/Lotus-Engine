@@ -30,10 +30,12 @@ namespace Lotus {
             .Build();
 
         LoadGameObjects();
+        m_Texture = new Texture( "../Assets/Textures/statue.jpg", m_Device );
     }
 
     Application::~Application()
     {
+        m_Texture->~Texture();
         vkDeviceWaitIdle(m_Device.GetDevice());
     }
 
@@ -84,7 +86,7 @@ namespace Lotus {
         //MouseMovementController mouseController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
-
+        float timer = 0;
         //SimpleRenderSystem LineListRenderSystem{ m_Device, m_Renderer.GetSwapChainRenderPass(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST };
         while (!m_Window.Closed())
         {
@@ -93,7 +95,9 @@ namespace Lotus {
             auto newTime = std::chrono::high_resolution_clock::now();
             float frameTime = std::chrono::duration<float>(newTime - currentTime).count();
             currentTime = newTime;
-            
+
+            timer += frameTime;
+
             cameraController.MoveInPlaneXY(m_Window.GetWindow(), frameTime, cameraObject);
             //mouseController.UpdateMouse(m_Window.GetWindow(), frameTime, cameraObject);
 
@@ -122,13 +126,13 @@ namespace Lotus {
                 ubo.projection = camera.GetProjectionMatrix();
                 ubo.view = camera.GetViewMatrix();
                 ubo.inverseView = camera.GetInverseViewMatrix();
-                pointLightSystem.Update(frameInfo, ubo);
+                pointLightSystem.Update(frameInfo, ubo, timer);
                 uboBuffers[frameIndex]->WriteToBuffer(&ubo);
                 uboBuffers[frameIndex]->Flush();
                 // Render
                 m_Renderer.BeginSwapChainRenderPass(commandBuffer);
 
-                // ORDER MATTERS
+                // order matters
                 simpleRenderSystem.RenderGameObjects(frameInfo);
                 pointLightSystem.Render(frameInfo);
 

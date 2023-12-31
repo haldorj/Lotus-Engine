@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Camera/Camera.h"
-#include "Lotus/GameObject.h"
+#include "GameObject/GameObject.h"
 #include <vulkan/vulkan.h>
 
 namespace Lotus

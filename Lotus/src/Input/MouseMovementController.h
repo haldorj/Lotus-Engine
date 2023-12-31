@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Lotus/GameObject.h"
+#include "GameObject/GameObject.h"
 #include "Window/Window.h"
 
 namespace  Lotus

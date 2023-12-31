@@ -42,6 +42,7 @@ namespace Lotus
         Device& operator=(Device&&) = delete;
 
         VkCommandPool GetCommandPool() const { return m_CommandPool; }
+        VkPhysicalDevice GetPhysicalDevice() const { return m_PhysicalDevice; }
         VkDevice GetDevice() const { return m_Device; }
         VkSurfaceKHR Surface() const { return m_Surface; }
         VkQueue GraphicsQueue() const { return m_GraphicsQueue; }
@@ -63,6 +64,8 @@ namespace Lotus
         VkCommandBuffer BeginSingleTimeCommands();
         void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
         void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        void TransitionImageLayout(
+            VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t layerCount);
         void CopyBufferToImage(
             VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
