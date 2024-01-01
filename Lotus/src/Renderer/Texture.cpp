@@ -24,83 +24,6 @@ namespace Lotus {
         vkFreeMemory(m_Device.GetDevice(), m_TextureImageMemory, nullptr);
     }
 
-    void Texture::Test(std::string filepath, Device& device)
-    {
-        int channels;
-        int m_BytesPerPixel;
-
-        auto data = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_BytesPerPixel, 4);
-
-        Buffer stagingBuffer{
-            device,
-            4,
-            static_cast<uint32_t>(m_Width * m_Height),
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-        };
-
-        stagingBuffer.Map();
-        stagingBuffer.WriteToBuffer(data);
-
-        m_TextureFormat = VK_FORMAT_R8G8B8A8_SRGB;
-
-        VkImageCreateInfo imageInfo = {};
-        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
-        imageInfo.format = m_TextureFormat;
-        imageInfo.mipLevels = 1;
-        imageInfo.arrayLayers = 1;
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        imageInfo.extent = { static_cast<uint32_t>(m_Width), static_cast<uint32_t>(m_Height), 1 };
-        imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-
-
-        device.CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_TextureImage, m_TextureImageMemory);
-
-        device.TransitionImageLayout(m_TextureImage, m_TextureFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
-
-        device.CopyBufferToImage(stagingBuffer.GetBuffer(), m_TextureImage, static_cast<uint32_t>(m_Width), static_cast<uint32_t>(m_Height), 1);
-
-        m_TextureLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-        VkSamplerCreateInfo samplerInfo{};
-        samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-        samplerInfo.magFilter = VK_FILTER_LINEAR;
-        samplerInfo.minFilter = VK_FILTER_LINEAR;
-        samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-        samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.mipLodBias = 0.0f;
-        samplerInfo.compareOp = VK_COMPARE_OP_NEVER;
-        samplerInfo.minLod = 0.0f;
-        samplerInfo.maxLod = 4.0f;
-        samplerInfo.maxAnisotropy = 4.0;
-        samplerInfo.anisotropyEnable = VK_TRUE;
-        samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-
-        vkCreateSampler(device.GetDevice(), &samplerInfo, nullptr, &m_TextureSampler);
-
-        VkImageViewCreateInfo imageViewInfo{};
-        imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        imageViewInfo.format = m_TextureFormat;
-        imageViewInfo.components = { VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A };
-        imageViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        imageViewInfo.subresourceRange.baseMipLevel = 0;
-        imageViewInfo.subresourceRange.baseArrayLayer = 0;
-        imageViewInfo.subresourceRange.layerCount = 1;
-        imageViewInfo.subresourceRange.levelCount = 1;
-        imageViewInfo.image = m_TextureImage;
-
-        vkCreateImageView(device.GetDevice(), &imageViewInfo, nullptr, &m_TextureImageView);
-
-        stbi_image_free(data);
-}
-
     void Texture::CreateTextureImage(std::string filePath, Device& device)
 	{
         // Loading an image /////////////////////////////
@@ -129,13 +52,11 @@ namespace Lotus {
 
         // Creating the image /////////////////////////////
 
-        m_TextureFormat = VK_FORMAT_R8G8B8A8_SRGB;
-
         CreateImage(
             device,
             m_Width,
             m_Height,
-            m_TextureFormat,
+            VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_TILING_OPTIMAL, 
             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -147,9 +68,9 @@ namespace Lotus {
 
         device.TransitionImageLayout(
             m_TextureImage, 
-            m_TextureFormat,
+            VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_LAYOUT_UNDEFINED, 
-            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             m_LayerCount
         );
 
@@ -161,13 +82,16 @@ namespace Lotus {
             m_LayerCount
         );
 
+        m_TextureLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
         device.TransitionImageLayout(
             m_TextureImage, 
-            m_TextureFormat, 
+            VK_FORMAT_R8G8B8A8_SRGB, 
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
-            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            m_TextureLayout,
             m_LayerCount
         );
+
 
 	}
 

@@ -62,6 +62,7 @@ namespace Lotus {
         imageInfo.imageLayout = texture.GetImageLayout();
         imageInfo.imageView = texture.GetImageView();
         imageInfo.sampler = texture.GetSampler();
+        //imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < globalDescriptorSets.size(); i++)

@@ -39,7 +39,6 @@ namespace Lotus {
 
 		VkImageView m_TextureImageView;
 		VkSampler m_TextureSampler;
-		VkFormat m_TextureFormat;
 		VkImageLayout m_TextureLayout;
 
 		uint32_t m_LayerCount = 1;

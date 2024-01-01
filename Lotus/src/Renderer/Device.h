@@ -78,8 +78,8 @@ namespace Lotus
         VkPhysicalDeviceProperties properties;
 
     private:
-        void CreateInstance();
         void SetupDebugMessenger();
+        void CreateInstance();
         void CreateSurface();
         void PickPhysicalDevice();
         int RateDeviceSuitability(VkPhysicalDevice device);
