@@ -57,11 +57,11 @@ namespace Lotus {
             .AddBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
             .Build();
 
-        Texture texture("../Assets/Textures/viking_room.png", m_Device);
+        Texture vikingTexture("../Assets/Textures/viking_room.png", m_Device);
         VkDescriptorImageInfo imageInfo{};
-        imageInfo.imageLayout = texture.GetImageLayout();
-        imageInfo.imageView = texture.GetImageView();
-        imageInfo.sampler = texture.GetSampler();
+        imageInfo.imageLayout = vikingTexture.GetImageLayout();
+        imageInfo.imageView = vikingTexture.GetImageView();
+        imageInfo.sampler = vikingTexture.GetSampler();
         //imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);

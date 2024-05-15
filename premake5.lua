@@ -16,7 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Lotus/vendor/GLFW/include"
 IncludeDir["ImGui"] = "Lotus/vendor/imgui"
 IncludeDir["glm"] = "Lotus/vendor/glm"
-IncludeDir["Vulkan"] = "C:/VulkanSDK/1.3.268.0/Include"
+IncludeDir["Vulkan"] = "C:/VulkanSDK/1.3.280.0/Include"
 IncludeDir["tinyobjloader"] = "Lotus/vendor/tinyobjloader"
 IncludeDir["stb_image"] = "Lotus/vendor/stb_image"
 
@@ -66,7 +66,7 @@ project "Lotus"
         "GLFW",
         "ImGui",
         "opengl32.lib",
-        "C:/VulkanSDK/1.3.268.0/Lib/vulkan-1.lib"
+        "C:/VulkanSDK/1.3.280.0/Lib/vulkan-1.lib"
     }
 
     filter "system:windows"
