@@ -345,8 +345,8 @@ void VulkanRenderer::createRenderPass()
 void VulkanRenderer::createGraphicsPipeline()
 {
 	// Read in SPIR-V code of shaders
-	auto vertShaderCode = readFile("Shaders/vert.spv");
-	auto fragShaderCode = readFile("Shaders/frag.spv");
+	auto vertShaderCode = readFile("shaders/vert.spv");
+	auto fragShaderCode = readFile("shaders/frag.spv");
 
 	// Build Shader Modules to link to Graphics Pipeline
 	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
