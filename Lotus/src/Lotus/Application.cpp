@@ -5,6 +5,7 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include "VulkanRenderer/VulkanRenderer.h"
 
 namespace Lotus {
 
@@ -12,6 +13,8 @@ namespace Lotus {
 
 	Application* Application::s_Instance = nullptr;
 	GLFWwindow* m_Window;
+
+	VulkanRenderer vulkanRenderer;
 
 	Application::Application()
 		: m_Running{true}
@@ -23,22 +26,26 @@ namespace Lotus {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		m_Window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
 
-		uint32_t extensionCount = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+		//uint32_t extensionCount = 0;
+		//vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
-		std::cout << extensionCount << " extensions supported\n";
+		//std::cout << extensionCount << " extensions supported\n";
 
-		glm::mat4 matrix;
-		glm::vec4 vec;
-		auto test = matrix * vec;
+		if (vulkanRenderer.init(m_Window) == EXIT_FAILURE)
+		{
+			return;
+		}
 	}
 
 
 	Application::~Application()
 	{
+
 		glfwDestroyWindow(m_Window);
 
 		glfwTerminate();
+
+		vulkanRenderer.cleanup();
 	}
 
 	void Application::Run()

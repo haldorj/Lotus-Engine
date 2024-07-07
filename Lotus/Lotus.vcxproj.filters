@@ -1287,6 +1287,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Lotus\VulkanRenderer\VulkanRenderer.h" />
+    <ClInclude Include="src\Lotus\VulkanRenderer\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lotus\Application.cpp">
@@ -1298,5 +1300,6 @@
     <ClCompile Include="src\lotuspch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Lotus\VulkanRenderer\VulkanRenderer.cpp" />
   </ItemGroup>
 </Project>
